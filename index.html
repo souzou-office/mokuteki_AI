@@ -1,0 +1,1817 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>会社設立目的自動生成システム</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Yu Gothic', 'Meiryo', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .input-method-selection {
+            padding: 40px 20px;
+        }
+
+        .method-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .method-card {
+            background: white;
+            border: 3px solid #e0e0e0;
+            border-radius: 20px;
+            padding: 35px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .method-card:hover {
+            border-color: #667eea;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+        }
+
+        .method-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+
+        .method-card h3 {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .method-description {
+            color: #666;
+            font-size: 15px;
+            margin-bottom: 20px;
+        }
+
+        .method-features {
+            text-align: left;
+            list-style: none;
+            margin: 20px 0;
+            padding: 0;
+        }
+
+        .method-features li {
+            color: #555;
+            font-size: 14px;
+            margin-bottom: 10px;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .method-features li:before {
+            content: "✓";
+            color: #667eea;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+
+        .method-example {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 13px;
+            color: #666;
+            margin: 20px 0;
+        }
+
+        .method-select-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.2s;
+            width: 100%;
+        }
+
+        .method-select-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .back-btn-container {
+            margin-bottom: 20px;
+        }
+
+        .back-btn {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .back-btn:hover {
+            background: #5a6268;
+        }
+
+        .simple-input-section, .detailed-input-section {
+            padding: 20px 0;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .section-header h2 {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .section-header p {
+            color: #666;
+            font-size: 15px;
+        }
+
+        .business-card {
+            background: #ffffff;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+
+        .business-card:hover {
+            border-color: #667eea;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .card-header h3 {
+            color: #667eea;
+            font-size: 20px;
+            margin: 0;
+        }
+
+        .business-number {
+            font-weight: bold;
+        }
+
+        .remove-card-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            transition: all 0.2s;
+            font-weight: bold;
+        }
+
+        .remove-card-btn:hover {
+            background: #c82333;
+            transform: scale(1.1);
+        }
+
+        .card-body {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: #333;
+            font-size: 15px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 15px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .add-business-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            width: 100%;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .add-business-btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .input-section {
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .input-item {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: flex-start;
+        }
+
+        .input-item input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 15px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        .input-item input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .remove-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 20px;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .remove-btn:hover {
+            background: #c82333;
+            transform: scale(1.05);
+        }
+
+        .add-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 15px;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .add-btn:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+
+        .section-title {
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 5px solid #667eea;
+        }
+
+        .section-title h3 {
+            color: #333;
+            font-size: 18px;
+            margin: 0;
+        }
+
+        .button-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .generate-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 50px;
+            font-size: 18px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-weight: bold;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .generate-btn:active {
+            transform: translateY(0);
+        }
+
+        .generate-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .results-section {
+            margin-top: 40px;
+            display: none;
+        }
+
+        .results-section.show {
+            display: block;
+        }
+
+        .results-header {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 5px solid #667eea;
+        }
+
+        .results-header h2 {
+            color: #333;
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+
+        .results-header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .collapse-all-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .collapse-all-btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        .purpose-list {
+            list-style: none;
+        }
+
+        .purpose-item {
+            background: white;
+            padding: 15px 20px;
+            margin-bottom: 12px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+            transition: all 0.2s;
+        }
+
+        .purpose-item:hover {
+            background: #f8f9ff;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1);
+        }
+
+        .purpose-item.dragging {
+            opacity: 0.5;
+            transform: scale(0.95);
+        }
+
+        .purpose-item.drag-over {
+            border-top: 3px solid #667eea;
+        }
+
+        .drag-handle {
+            cursor: grab;
+            color: #6c757d;
+            font-size: 20px;
+            padding: 5px;
+            user-select: none;
+            flex-shrink: 0;
+        }
+
+        .drag-handle:active {
+            cursor: grabbing;
+        }
+
+        .drag-handle:hover {
+            color: #495057;
+        }
+
+        .purpose-item-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 10px;
+            flex-wrap: nowrap;
+        }
+
+        .purpose-number {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            width: 30px;
+            height: 30px;
+            line-height: 30px;
+            text-align: center;
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .purpose-input-main {
+            flex: 1;
+            min-width: 0;
+            padding: 10px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 15px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        .purpose-input-main:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .purpose-controls {
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .toggle-select-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            white-space: nowrap;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .toggle-select-btn:hover {
+            background: #5568d3;
+        }
+
+        .purpose-select-container {
+            display: none;
+            margin-top: 10px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .purpose-select-container.show {
+            display: block;
+        }
+
+        .select-category {
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .select-category:last-child {
+            border-bottom: none;
+        }
+
+        .select-category-header {
+            background: #f8f9fa;
+            padding: 12px 15px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.2s;
+            user-select: none;
+        }
+
+        .select-category-header:hover {
+            background: #e9ecef;
+        }
+
+        .select-category-header h5 {
+            margin: 0;
+            font-size: 15px;
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .select-category-toggle {
+            font-size: 16px;
+            color: #6c757d;
+            transition: transform 0.3s;
+        }
+
+        .select-category.collapsed .select-category-toggle {
+            transform: rotate(-90deg);
+        }
+
+        .select-category-items {
+            max-height: 300px;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+
+        .select-category.collapsed .select-category-items {
+            max-height: 0;
+        }
+
+        .select-purpose-option {
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #333;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .select-purpose-option:last-child {
+            border-bottom: none;
+        }
+
+        .select-purpose-option:hover {
+            background: #f8f9ff;
+            color: #667eea;
+        }
+
+        .add-purpose-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 15px;
+            margin-top: 15px;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .add-purpose-btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        .remove-purpose-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            flex-shrink: 0;
+            transition: all 0.2s;
+        }
+
+        .remove-purpose-btn:hover {
+            background: #c82333;
+            transform: scale(1.1);
+        }
+
+        .copy-all-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            border-radius: 50px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.2s;
+        }
+
+        .copy-all-btn:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            display: none;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .note {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            color: #856404;
+            font-size: 14px;
+        }
+
+        .copy-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #28a745;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            display: none;
+            animation: slideIn 0.3s ease-out;
+            z-index: 1000;
+        }
+
+        .copy-notification.show {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 22px;
+            }
+            
+            .generate-btn {
+                padding: 12px 30px;
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏢 会社設立目的 自動生成システム</h1>
+            <p>事業内容を入力するだけで、最適な会社目的を自動生成します</p>
+        </div>
+
+        <div class="content">
+            <!-- 入力方法選択画面 -->
+            <div class="input-method-selection" id="methodSelection">
+                <h2 style="text-align: center; color: #333; margin-bottom: 30px;">事業内容を入力してください</h2>
+                
+                <div class="method-cards" style="max-width: 600px;">
+                    <div class="method-card" onclick="selectMethod('simple')">
+                        <div class="method-icon">✨</div>
+                        <h3>事業内容入力</h3>
+                        <p class="method-description">業種や事業内容を入力してください</p>
+                        <ul class="method-features">
+                            <li>1〜2分で完了</li>
+                            <li>業種名だけでもOK</li>
+                            <li>重要度が高いものから入力</li>
+                        </ul>
+                        <div class="method-example">
+                            例: 不動産業、飲食店、IT企業
+                        </div>
+                        <button class="method-select-btn">入力を始める</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 簡単入力画面 -->
+            <div class="simple-input-section" id="simpleInput" style="display: none;">
+                <div class="section-header">
+                    <h2>✨ 事業内容入力</h2>
+                    <p>業種や事業内容を入力してください</p>
+                </div>
+
+                <div class="input-group">
+                    <div class="section-title">
+                        <h3>💼 業種・事業内容</h3>
+                    </div>
+                    <p style="color: #666; font-size: 14px; margin-bottom: 15px;">
+                        ※ 重要度が高いものから順に入力してください<br>
+                        ※ 3年後くらいまでに行う予定のある事業も含めて入力してください
+                    </p>
+                    <div id="simpleBusinessItems">
+                        <div class="input-item">
+                            <input type="text" placeholder="例: 不動産業、Webサイト制作、飲食店経営" class="simple-business-input">
+                            <button class="remove-btn" onclick="removeItem(this)" style="visibility: hidden;">×</button>
+                        </div>
+                    </div>
+                    <button class="add-btn" onclick="addSimpleBusinessItem()">
+                        <span>➕</span> 追加
+                    </button>
+                </div>
+
+                <div class="button-container">
+                    <button class="generate-btn" onclick="generatePurposesSimple()">
+                        目的を自動選定する
+                    </button>
+                </div>
+
+                <div class="note">
+                    💡 <strong>ヒント:</strong> 業種名や事業内容を入力するだけで、AIが最適な会社目的を選定します。
+                </div>
+            </div>
+
+            <div class="loading" id="loading">
+                <div class="loading-spinner"></div>
+                <p>AIが最適な目的を選定中...</p>
+            </div>
+
+            <div class="results-section" id="results">
+                <div class="results-header">
+                    <div>
+                        <h2>選定された会社目的</h2>
+                        <p id="resultsCount">目的が選定されました。業種ごとに分類し、編集・並び替えができます。</p>
+                    </div>
+                </div>
+
+                <div class="purpose-list" id="purposeList">
+                </div>
+
+                <button class="add-purpose-btn" onclick="addNewPurpose()">
+                    ➕ 目的を追加
+                </button>
+
+                <div class="button-container">
+                    <button class="copy-all-btn" onclick="copyAllPurposes()">
+                        📋 すべての目的をコピー
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="copy-notification" id="copyNotification">
+        ✓ コピーしました!
+    </div>
+
+    <script>
+        // 目的データベース（提供されたドキュメントから）
+        const purposeDatabase = {
+            "情報通信業": [
+                "コンピュータのソフトウェア及びハードウェア並びに通信・情報処理機器の企画、研究、開発、設計、製造、販売、保守、リース、賃貸及び輸出入並びにそれらに関するコンサルティング業務",
+                "インターネット等の通信ネットワーク及び電子技術を利用した各種情報提供サービス及び情報収集サービス",
+                "通信販売業務",
+                "コンピュータの操作指導等に関する事業",
+                "コールセンター業務(電話受信発信業務代行業)",
+                "コンピュータシステムによるデータ入力及びそれに伴う事務処理の受託",
+                "音声、映像のソフトウェアの企画、制作、販売及び賃貸",
+                "情報の収集、分析・管理及び処理サービス業・情報提供サービス業並びに情報処理に関する研究開発",
+                "通信システムによる各種情報、画像、楽曲の収集、配信、処理・販売並びにそれらに係る機器及び装置類の販売",
+                "自然科学及び建築上の諸技術に関する総合的な研究開発業務",
+                "EC(電子商取引)サイト及びその他各種ウェブサイトの企画、制作、販売、配信、運営及び管理",
+                "各種アプリケーションソフトの企画、制作、販売、運営及び管理",
+                "インターネット広告事業",
+                "デジタルマーケティング支援業務",
+                "SEO・SEM等のマーケティングコンサルティング",
+                "デジタルコンテンツの企画、制作、配信及び販売",
+                "オンラインメディアの運営",
+                "電子書籍・電子出版事業",
+                "ゲームソフトウェアの企画、開発及び販売",
+                "クラウドコンピューティングサービスの提供",
+                "ASP・SaaSサービスの提供",
+                "データセンターの運営及び管理",
+                "情報セキュリティに関するコンサルティング及びサービス",
+                "ネットワークセキュリティシステムの構築及び運用",
+                "システムインテグレーション業務",
+                "ITコンサルティング業務",
+                "業務効率化・DX推進支援",
+                "電気通信事業",
+                "電気通信設備の設置、保守及び運用",
+                "ネットワークの構築、運用及び保守",
+                "人工知能(AI)、機械学習に関する研究開発及びサービス提供",
+                "IoT関連システムの開発及び販売",
+                "ビッグデータの解析及び活用サービス",
+                "ブロックチェーン技術を活用したサービス",
+                "IT人材の教育・研修事業",
+                "技術者の派遣及び紹介",
+                "eラーニングシステムの開発及び運営",
+                "電子決済サービスの提供",
+                "電子マネー、ポイントサービスの運営",
+                "金融情報処理サービス"
+            ],
+            "飲食店・宿泊業": [
+                "旅館業法に基づく旅館業",
+                "旅館業法に基づくホテル営業",
+                "旅館業法に基づく簡易宿所営業",
+                "住宅宿泊事業法に基づく住宅宿泊事業",
+                "住宅宿泊事業法に基づく住宅宿泊管理業",
+                "住宅宿泊事業法に基づく住宅宿泊仲介業",
+                "貸別荘及び貸ビルの経営",
+                "ウィークリーマンション、マンスリーマンション等の賃貸業",
+                "宿泊施設の運営受託及び管理業務",
+                "宿泊予約サイトの運営及び仲介業務",
+                "飲食店及び喫茶店の経営",
+                "料理教室の経営",
+                "飲食店の経営指導及びコンサルティング業務",
+                "コンビニエンスストアの経営",
+                "パン、ケーキの製造及び販売",
+                "仕出し料理及び弁当の製造及び販売",
+                "野菜、果物の生産、加工及び販売並びに輸出入",
+                "酒類の製造及び販売並びに輸出入",
+                "清涼飲料水の製造及び販売並びに輸出入"
+            ],
+            "卸売・小売業": [
+                "衣料品、衣料雑貨品、装身具、鞄、時計、宝飾品の企画、製造、販売及び輸出入",
+                "雑貨、化粧品、文具、書籍、音楽用品、日用雑貨の企画、製造、販売及び輸出入",
+                "テキスタイル、インテリア、家具の企画、製造、販売及び輸出入",
+                "家電製品、電気機器、電子機器の企画、製造、販売及び輸出入",
+                "コンピュータ、ソフトウェア、OA機器の企画、製造、販売及び輸出入",
+                "建築資材、建材、住宅設備機器の企画、製造、販売及び輸出入",
+                "医薬品、医薬部外品、医療機器の企画、製造、販売及び輸出入",
+                "健康食品、サプリメントの企画、製造、販売及び輸出入",
+                "自動車、自動車部品、用品の企画、製造、販売及び輸出入",
+                "石油製品、燃料の企画、製造、販売及び輸出入",
+                "化学製品、工業薬品の企画、製造、販売及び輸出入",
+                "農業資材、農機具、肥料、飼料の企画、製造、販売及び輸出入",
+                "スポーツ用品、レジャー用品の企画、製造、販売及び輸出入",
+                "ペット用品、ペットフードの企画、製造、販売及び輸出入",
+                "玩具、ゲーム用品の企画、製造、販売及び輸出入",
+                "園芸用品、植物、種苗の企画、製造、販売及び輸出入",
+                "美術品、骨董品、工芸品の企画、製造、販売及び輸出入",
+                "その他各種商品の企画、製造、販売及び輸出入",
+                "金券、商品券、ギフト券の販売",
+                "生鮮食品、保存食品及び加工食品の販売",
+                "酒類の販売",
+                "その他食料品の販売",
+                "生活用品、食料品等の移動販売事業",
+                "古物営業法に基づく古物営業",
+                "質屋営業法に基づく質屋営業",
+                "ＯＥＭ（他社ブランド製品の製造）並びにプライベートブランド商品の企画、製造及び販売"
+            ],
+            "教育・学習支援業": [
+                "学習塾、予備校及び学習教室の経営",
+                "進学相談、進路指導及びカウンセリング業務",
+                "模擬試験の企画、実施及び運営",
+                "家庭教師の派遣及び紹介",
+                "音楽教室の経営",
+                "美術教室、絵画教室の経営",
+                "書道教室の経営",
+                "茶道、華道、伝統芸能教室の経営",
+                "各種カルチャーセンターの経営",
+                "料理教室の経営",
+                "日本語教育事業",
+                "外国語教室の経営",
+                "パソコン教室の経営",
+                "スポーツ教室、スポーツスクールの経営",
+                "ダンス教室の経営",
+                "幼児教室の経営",
+                "学童保育、放課後児童クラブの経営",
+                "資格取得のための教育及び講座の開催",
+                "職業訓練及び技能訓練の実施",
+                "企業研修、社員教育の企画、実施及び運営"
+            ],
+            "旅行・娯楽事業": [
+                "旅行業法に基づく旅行業",
+                "旅行業法に基づく旅行業者代理業",
+                "旅行業法に基づく旅行サービス手配業",
+                "ツアーの企画及び運営並びに観光情報の提供",
+                "翻訳、通訳及び観光ガイド",
+                "スポーツ、演芸、演劇、映画その他各種の興行",
+                "エステティックサロンの経営",
+                "温泉施設、スパ、リゾート施設の経営",
+                "プール、海水浴場の経営",
+                "フィットネスクラブ、スポーツジムの経営",
+                "ゴルフ場、ゴルフ練習場の経営",
+                "釣り堀、釣り船業",
+                "スキー場、スケート場の経営",
+                "ライブハウス、ナイトクラブの経営",
+                "動物園、水族館、植物園の経営",
+                "キャンプ場、公園、マリーナ等のレジャー施設、スポーツ施設、美術館、プラネタリウム等の文化施設及び研修教育施設の運営及び賃貸",
+                "各種イベントの企画及び運営の請負",
+                "映画、コンサート、演劇、スポーツ、イベント等の各種優待チケットの販売",
+                "CD、DVD、ミュージックテープ、ビデオ等の販売及びそれらに関連する商品の企画、制作、販売、輸出入及び賃貸",
+                "パンフレット、キャラクター商品の販売",
+                "音響機器、映像機器の製造、販売、賃貸及びリース"
+            ],
+            "サービス業（マスコミ・出版・広告）": [
+                "広告代理業及び各種の宣伝に関する業務",
+                "書籍及び電子出版物の企画、編集、制作、出版、販売及び仲介",
+                "出版権、著作権の取得、管理及び販売",
+                "出版物の企画、編集に関するコンサルティング業務",
+                "商業印刷、出版印刷業",
+                "製本業",
+                "各種印刷物の企画、デザイン、制作及び販売",
+                "カタログ、パンフレット、チラシの企画、制作及び印刷",
+                "名刺、封筒、伝票等の印刷及び販売",
+                "包装資材、紙器の企画、制作、印刷及び販売",
+                "写真業並びに写真、動画の撮影、企画、制作及び販売",
+                "ニュース、情報の取材、編集及び配信",
+                "各種広告の企画、制作、配信及び運営",
+                "インターネット広告の企画、制作、配信及び運営",
+                "デジタルマーケティング、Webマーケティング業務",
+                "SEO、SEM、リスティング広告に関する業務",
+                "SNSマーケティング、インフルエンサーマーケティング業務",
+                "屋外広告、交通広告の企画、制作及び運営",
+                "広告物の企画、デザイン、制作及び販売",
+                "看板、標識、ディスプレイの企画、制作、設置及び販売",
+                "販売促進に関する企画、立案及び実施",
+                "PR（パブリックリレーションズ）業務",
+                "市場調査、マーケティングリサーチ"
+            ],
+            "人材サービス": [
+                "労働者派遣事業",
+                "有料職業紹介事業",
+                "アウトソーシング事業の受託及び請負",
+                "求人、求職情報提供サービスの企画、運営及び管理業務",
+                "ヘッドハンティング及びエグゼクティブサーチ業務",
+                "転職・再就職支援サービス",
+                "定年退職者の再就職支援",
+                "障がい者の就労支援サービス",
+                "障がい者雇用に関するコンサルティング業務",
+                "シニア人材の紹介及び派遣",
+                "技能実習生の受入支援及び監理業務",
+                "特定技能外国人の支援業務",
+                "人材採用に関するコンサルティング業務",
+                "採用代行サービス",
+                "キャリアコンサルティング、キャリアカウンセリング及びキャリア診断",
+                "人材の育成、職業適性、能力開発のための教育及びカウンセリング業務",
+                "研修、セミナー、講演会、講習会等の各種催事の企画、立案、実施、運営及びそれらに関するコンサルティング業務",
+                "各種学校等への進学に関する情報の提供及び生徒、学生の募集に関するコンサルティング業務",
+                "人材評価、人材アセスメント、適性検査及び能力診断の実施並びに提供",
+                "心理検査、性格検査の実施及び販売"
+            ],
+            "サービス業（理容・美容・洗濯・生活）": [
+                "美容室、理容室、エステティックサロン及びネイルサロンの経営",
+                "按摩、マッサージ、指圧、鍼、灸び柔道整復師の施術所の経営",
+                "クリーニング業、リネンサプライ業及びその商品の配達業",
+                "コインランドリーの経営",
+                "清掃業",
+                "家事代行サービス業",
+                "自動車、自転車及びスポーツ用品の貸与業",
+                "食品、日用雑貨等の宅配業",
+                "警備業法に基づく警備業"
+            ],
+            "サービス業（芸能）": [
+                "タレント、モデル、アーティスト、ダンサー、スポーツ選手、ヘアデザイナー及びスタイリストのマネージメント業務並びに肖像権管理",
+                "芸能プロダクション及びモデルプロダクション等の経営",
+                "タレント及びアーティストの養成及び育成に関する事業",
+                "キャスティング業務及び人材派遣業",
+                "映画、音楽、美術、演劇、演芸、講演、スポーツ事業その他の文化事業の企画、制作、興行、それらの施設の運営及び貸与並びにそれらの関連商品の販売",
+                "書籍の出版、販売及び輸出入",
+                "作詞、作曲、編曲及び写譜の受託",
+                "文化、研究、芸術、スポーツ等の国際交流事業の企画、立案及び実施",
+                "レコーディングスタジオ及び音楽レッスンスタジオの運営"
+            ],
+            "医療・福祉": [
+                "病院、診療所及びクリニックの開設及び経営",
+                "リハビリテーション施設の経営",
+                "訪問看護ステーションの経営",
+                "在宅医療及び在宅看護に関する支援事業",
+                "介護保険法に基づく施設サービス事業",
+                "介護保険法に基づく居宅サービス事業",
+                "介護保険法に基づく地域密着型サービス事業",
+                "介護保険法に基づく居宅介護支援事業",
+                "介護保険法に基づく介護予防サービス事業",
+                "介護保険法に基づく地域密着型介護予防サービス事業",
+                "介護保険法に基づく介護予防支援事業",
+                "介護保険法に基づく第1号事業",
+                "地域包括支援センターの受託運営",
+                "訪問入浴介護事業",
+                "配食サービス事業",
+                "介護職員及び医療従事者の人材派遣業及び職業紹介事業",
+                "介護職員及び医療従事者の教育、研修及び養成事業",
+                "福祉車両の販売及びリース業",
+                "障害者の日常生活及び社会生活を総合的に支援するための法律に基づく障害福祉サービス事業",
+                "障害者の日常生活及び社会生活を総合的に支援するための法律に基づく一般相談支援事業",
+                "障害者の日常生活及び社会生活を総合的に支援するための法律に基づく特定相談支援事業",
+                "障害者の日常生活及び社会生活を総合的に支援するための法律に基づく地域活動支援センターの経営",
+                "障害者の日常生活及び社会生活を総合的に支援するための法律に基づく移動支援事業",
+                "児童福祉法に基づく障害児通所支援事業",
+                "児童福祉法に基づく障害児相談支援事業",
+                "整骨院の経営",
+                "歯科診療所の経営",
+                "薬局の経営",
+                "有料老人ホームの経営",
+                "医療機器類の販売",
+                "医薬品及び医薬部外品の販売",
+                "健康器具の販売",
+                "福祉用具の販売及びレンタル事業",
+                "医療及び介護に関するコンサルティング業務"
+            ],
+            "運輸業・旅客運送業": [
+                "一般貨物自動車運送事業",
+                "貨物軽自動車運送事業",
+                "貨物利用運送事業",
+                "特定貨物自動車運送事業",
+                "貨物運送取扱事業",
+                "通関業",
+                "国際航空貨物運送代理店業及び国際海上貨物運送代理店業",
+                "輸出入貨物の梱包、荷役及び通関手続きの代行業",
+                "引越作業の荷物の梱包、解梱及び入出荷業務の請負",
+                "自動車運転代行業",
+                "倉庫業",
+                "運送業、倉庫業における寄送品包装業の請負",
+                "物流に関するコンサルティング業務",
+                "自動車、中古自動車及びそれらの関連部品の企画、製造、売買、リース及び輸出入",
+                "自動車のオークション代行及び委託販売業",
+                "自動車の陸送及び回送",
+                "使用済自動車の再資源化等に関する法律による引取業、解体業及びフロンガス類回収業",
+                "一般貸切旅客自動車運送事業",
+                "一般乗用旅客自動車運送事業",
+                "一般乗合旅客自動車運送事業",
+                "特定旅客自動車運送事業",
+                "レンタカー業",
+                "自家用自動車有償運送業",
+                "自動車の賃貸業及びリース業",
+                "カーシェアリング事業"
+            ],
+            "金融・保険・投資業": [
+                "住宅ローン事務代行",
+                "貸金業法に基づく貸金業",
+                "債権の買取及び回収業",
+                "損害保険代理業",
+                "自動車損害賠償保障法に基づく保険代理業",
+                "生命保険の募集に関する業務",
+                "少額短期保険代理業",
+                "企業の財務、経営に関するコンサルティング業務",
+                "事業承継及び相続に関するコンサルティング業務"
+            ],
+            "電気・ガス・熱供給・水道業": [
+                "電気事業法に基づく発電事業、小売電気事業及び一般送配電事業",
+                "再生可能エネルギー発電設備、太陽光発電設備、オール電化機器及び新エネルギー関連機器の販売、設置工事及び保守点検業務",
+                "蓄電池システム及びエネルギーマネジメントシステムの販売、設置及び保守",
+                "半導体材料、太陽電池材料の輸出入、販売及びリサイクル事業",
+                "ガス事業法に基づく一般ガス導管事業及びガス小売事業",
+                "ガス製造設備、ガス導管及びガス供給施設の建設、保守及び運営",
+                "熱供給事業法に基づく熱供給事業",
+                "水道法に基づく上水道事業及び工業用水道事業",
+                "下水道法に基づく下水道事業",
+                "脱炭素化及びカーボンニュートラルに関する事業",
+                "エネルギーの効率的利用に関するコンサルティング業務"
+            ],
+            "不動産業": [
+                "不動産の売買、賃貸借、管理、仲介、保有及び運用",
+                "不動産に関するコンサルティング業務",
+                "宅地建物取引業法に基づく宅地建物取引業",
+                "建築の現場管理業務",
+                "不動産の鑑定業務",
+                "不動産テック及び不動産情報サービスの提供",
+                "ビルメンテナンス業",
+                "マンション管理業法に基づくマンション管理業",
+                "駐車場の経営及び管理",
+                "空き家の活用及び管理業務",
+                "不動産の賃貸経営及び資産運用に関するコンサルティング業務"
+            ],
+            "建設業": [
+                "土木工事及び建築工事の設計、施工、請負及び監理",
+                "大工工事業",
+                "とび・土工工事業",
+                "石工事業",
+                "電気工事業",
+                "管工事業",
+                "鋼構造物工事業",
+                "鉄筋工事業",
+                "舗装工事業",
+                "板金工事業",
+                "塗装工事業",
+                "防水工事業",
+                "内装仕上工事業",
+                "機械器具設置工事業",
+                "電気通信工事業",
+                "造園工事業",
+                "さく井工事業",
+                "消防施設工事業",
+                "清掃施設工事業",
+                "解体工事業",
+                "水道施設工事業",
+                "建設に関するコンサルティング業務"
+            ],
+            "産廃業": [
+                "産業廃棄物収集運搬業",
+                "産業廃棄物処分業",
+                "特別管理産業廃棄物収集運搬業",
+                "特別管理産業廃棄物処分業",
+                "一般廃棄物収集運搬業",
+                "一般廃棄物処分業",
+                "産業廃棄物の中間処理業",
+                "産業廃棄物の最終処分業",
+                "産業廃棄物の再生及びリサイクル事業",
+                "廃棄物処理施設の設計、施工、運営及び管理"
+            ],
+            "製造業（金属・機械・プラスチック）": [
+                "金属製品の製造、加工及び販売",
+                "金属の精密切削加工業",
+                "金属プレス製品の製造及び販売",
+                "金属加工技術に関するコンサルティング業務",
+                "金属製品の塗装及び熱処理業",
+                "金属板金の加工及び販売",
+                "金属表面処理業",
+                "治工具及び金型の設計、製作並びに販売",
+                "鉄鋼及び合金等の切断加工業",
+                "金属製品の輸出入業",
+                "機械部品の設計、製作及び販売",
+                "自動車部品の製造、加工及び販売",
+                "プラスチック製品の製造、加工及び販売",
+                "合成樹脂製品の成型、加工及び販売",
+                "ゴム製品及びプラスチック製品の企画、デザイン、製造及び販売",
+                "プラスチックフィルムの製造、加工及び販売",
+                "プラスチック成形加工技術の開発及び技術指導",
+                "プラスチック製品の輸出入業",
+                "プラスチック材料及び原料の販売",
+                "プラスチック製容器及び包装資材の製造、加工及び販売"
+            ],
+            "製造業（衣料品・家具）": [
+                "衣料品の企画、製造、販売及び輸出入",
+                "繊維製品の製造、加工及び販売",
+                "洋服及び洋装品の仕立て及び販売",
+                "服飾雑貨及びファッション小物の企画、製造及び販売",
+                "刺繍及びプリント加工業",
+                "縫製加工業",
+                "衣料品のOEM生産及び受託製造",
+                "テキスタイルの企画、デザイン及び販売",
+                "衣料品の染色及び整理加工業",
+                "ファッションデザインに関するコンサルティング業務",
+                "アパレルブランドの企画、運営及び管理",
+                "家具の製造、加工及び販売",
+                "木製家具の企画、デザイン、製造及び販売",
+                "金属製家具の製造及び販売",
+                "家具の製造、販売及び据付",
+                "インテリア用品及びエクステリア用品の企画、製造、販売並びに輸出入",
+                "木工製品の製造、加工及び販売",
+                "建具の製造、販売及び取付工事",
+                "店舗什器及び陳列棚の設計、製作及び販売",
+                "厨房設備及び厨房家具の製造、販売及び設置工事",
+                "家具の修理、補修及びリフォーム業務",
+                "インテリアコーディネート及びデザインに関する業務",
+                "家具のレンタル及びリース業",
+                "家具及び木材の輸出入業"
+            ],
+            "コンサルティング": [
+                "経営コンサルティング業務",
+                "各種マーケティングリサーチ業務",
+                "海外への投資及び事業進出に関するコンサルティング業務",
+                "企業の営業に関するコンサルティング業務",
+                "店舗の企画、プロデュース及びこれらに関するコンサルティング業務",
+                "ブランディング、プロモーション、広告代理業、イベントの企画・運営並びにこれらに関するコンサルティング業務",
+                "人材育成に関するコンサルティング業務",
+                "資産の管理、運用及びこれらに関するコンサルティング業務",
+                "情報システム、コンピュータネットワークシステム、ソフトウェア及びハードウェアの企画、設計、開発、販売、構築、保守、運用並びにこれらに関するコンサルティング業務",
+                "商品・サービスの企画、開発、製造、販売、輸出入、取次、代理及びこれらに関するコンサルティング業務",
+                "企業の合併、買収、事業譲渡、資本提携及びこれらに関するコンサルティング業務"
+            ]
+        };
+
+        // キーワードと業種のマッピング
+        const keywordMapping = {
+            "情報通信業": ["IT", "ソフトウェア", "システム", "Web", "アプリ", "AI", "人工知能", "機械学習", "IoT", 
+                        "クラウド", "SaaS", "セキュリティ", "ネットワーク", "DX", "デジタル", "EC", "電子商取引",
+                        "マーケティング", "SEO", "SEM", "SNS", "インターネット", "通信", "データ", "ビッグデータ",
+                        "コンサルティング", "開発", "プログラミング", "コーディング", "エンジニア"],
+            "飲食店・宿泊業": ["飲食店", "レストラン", "カフェ", "居酒屋", "ホテル", "旅館", "民泊", "宿泊", 
+                           "料理", "食事", "弁当", "ケータリング", "パン", "ケーキ"],
+            "卸売・小売業": ["販売", "小売", "卸売", "EC", "通販", "オンラインショップ", "物販", "商品", "輸入", 
+                        "輸出", "貿易", "雑貨", "アパレル", "ファッション", "化粧品", "家電", "食品"],
+            "教育・学習支援業": ["教育", "学習", "塾", "スクール", "教室", "研修", "セミナー", "講座", "eラーニング",
+                            "語学", "資格", "キャリア"],
+            "旅行・娯楽事業": ["旅行", "観光", "ツアー", "娯楽", "イベント", "フィットネス", "ジム", "スポーツ",
+                          "エステ", "レジャー", "温泉", "リゾート"],
+            "サービス業（マスコミ・出版・広告）": ["広告", "マーケティング", "出版", "印刷", "デザイン", "PR", 
+                                            "Web制作", "動画制作", "撮影", "編集"],
+            "人材サービス": ["人材", "派遣", "紹介", "求人", "転職", "採用", "キャリア", "アウトソーシング"],
+            "サービス業（理容・美容・洗濯・生活）": ["美容", "理容", "エステ", "ネイル", "クリーニング", "清掃", "家事代行"],
+            "サービス業（芸能）": ["芸能", "タレント", "モデル", "プロダクション", "マネジメント", "音楽", "映画"],
+            "医療・福祉": ["医療", "介護", "福祉", "病院", "クリニック", "訪問看護", "デイサービス", "ヘルパー",
+                       "リハビリ", "薬局", "障がい者支援"],
+            "運輸業・旅客運送業": ["運送", "物流", "配送", "倉庫", "輸送", "引越", "宅配", "通関", "レンタカー"],
+            "金融・保険・投資業": ["金融", "保険", "投資", "ローン", "ファイナンス", "資産運用"],
+            "電気・ガス・熱供給・水道業": ["電気", "ガス", "水道", "エネルギー", "太陽光", "発電", "再生可能エネルギー"],
+            "不動産業": ["不動産", "賃貸", "売買", "仲介", "マンション管理", "ビル管理", "駐車場"],
+            "建設業": ["建設", "建築", "土木", "工事", "リフォーム", "設計", "施工", "内装", "外装"],
+            "産廃業": ["産廃", "廃棄物", "ゴミ", "リサイクル", "処分"],
+            "製造業（金属・機械・プラスチック）": ["製造", "加工", "金属", "機械", "プラスチック", "部品", "金型"],
+            "製造業（衣料品・家具）": ["衣料", "アパレル", "繊維", "家具", "インテリア", "木工"],
+            "コンサルティング": ["コンサルティング", "経営", "戦略", "M&A", "事業承継", "マーケティングリサーチ"]
+        };
+
+        // Claude APIによる高精度な目的選定
+        async function selectPurposesWithAI(businesses, futures) {
+            let allPurposesText = "";
+            for (const [category, purposes] of Object.entries(purposeDatabase)) {
+                allPurposesText += `\n【${category}】\n`;
+                purposes.forEach((p, i) => {
+                    allPurposesText += `${i + 1}. ${p}\n`;
+                });
+            }
+
+            let businessInfo = "";
+            businesses.forEach(biz => {
+                businessInfo += `\n事業${biz.number}:\n`;
+                if (biz.customer) businessInfo += `  誰に: ${biz.customer}\n`;
+                if (biz.product) businessInfo += `  何を: ${biz.product}\n`;
+                if (biz.method) businessInfo += `  どのような形で: ${biz.method}\n`;
+            });
+
+            const prompt = `あなたは会社設立の専門家です。以下のビジネス情報から、最適な会社目的を選定してください。
+
+【ビジネス情報】${businessInfo}
+
+${futures.length > 0 ? `【3年後の展望】\n${futures.join("、")}` : ""}
+
+【利用可能な目的一覧】
+${allPurposesText}
+
+【選定ルール】
+1. 基本的には既存の目的一覧から選定してください
+2. ただし、以下の場合は新しい目的を作成してください：
+   - 特殊な商品・サービス（例: 特許取得商品、独自開発システム、オリジナル製品）
+   - 既存の目的では表現しきれない事業内容
+   - 業界特有の専門的な事業
+   - 新しいビジネスモデルや技術
+3. 一般的な事業内容（Web制作、飲食店、不動産など）の場合は、必ず既存リストから選んでください
+4. 入力が少ない場合は3-5個程度、詳細な場合は最大10個まで
+5. 選定した目的は、完全な文言で出力してください
+
+【出力形式】
+以下のJSON形式のみで出力してください。他の説明は不要です。
+{
+  "purposes": [
+    "目的文1",
+    "目的文2",
+    "目的文3"
+  ]
+}`;
+
+            try {
+                const response = await fetch("https://api.anthropic.com/v1/messages", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        model: "claude-sonnet-4-20250514",
+                        max_tokens: 2000,
+                        messages: [
+                            { role: "user", content: prompt }
+                        ]
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API Error: ${response.status}`);
+                }
+
+                const data = await response.json();
+                let responseText = data.content[0].text;
+                
+                responseText = responseText.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
+                const result = JSON.parse(responseText);
+                
+                return result.purposes.map(purpose => ({
+                    purpose: purpose,
+                    score: 100,
+                    category: findCategoryForPurpose(purpose)
+                }));
+
+            } catch (error) {
+                console.error("AI選定エラー:", error);
+                return selectPurposesWithKeywords(businesses, futures);
+            }
+        }
+
+        // 目的が既存のデータベースのどのカテゴリに属するかを判定
+        function findCategoryForPurpose(purpose) {
+            for (const [category, purposes] of Object.entries(purposeDatabase)) {
+                if (purposes.includes(purpose)) {
+                    return category;
+                }
+            }
+            return "卸売・小売業"; // デフォルトは卸売・小売業
+        }
+
+        // フォールバック用のキーワードマッチング
+        function selectPurposesWithKeywords(businesses, futures) {
+            let allInput = "";
+            businesses.forEach(biz => {
+                allInput += ` ${biz.customer} ${biz.product} ${biz.method}`;
+            });
+            allInput += ` ${futures.join(" ")}`;
+            allInput = allInput.toLowerCase();
+            
+            const purposeScores = [];
+
+            if (allInput.trim().length < 3) {
+                // 入力が少ない場合は情報通信業の最初の目的を返す
+                return [{ 
+                    purpose: purposeDatabase["情報通信業"][0], 
+                    score: 0, 
+                    category: "情報通信業" 
+                }];
+            }
+
+            for (const [category, purposes] of Object.entries(purposeDatabase)) {
+                const categoryKeywords = keywordMapping[category] || [];
+                
+                for (const purpose of purposes) {
+                    let score = 0;
+                    const purposeLower = purpose.toLowerCase();
+
+                    categoryKeywords.forEach(keyword => {
+                        if (allInput.includes(keyword.toLowerCase())) {
+                            score += 10;
+                        }
+                    });
+
+                    const inputWords = allInput.split(/[\s、,，]+/).filter(w => w.length > 1);
+                    inputWords.forEach(word => {
+                        if (purposeLower.includes(word)) {
+                            score += 5;
+                        }
+                    });
+
+                    if (score > 0) {
+                        purposeScores.push({ purpose, score, category });
+                    }
+                }
+            }
+
+            purposeScores.sort((a, b) => b.score - a.score);
+            const targetCount = Math.min(purposeScores.length, 7);
+            return purposeScores.slice(0, targetCount);
+        }
+
+        function selectMethod(method) {
+            document.getElementById('methodSelection').style.display = 'none';
+            document.getElementById('simpleInput').style.display = 'block';
+        }
+
+        function addSimpleBusinessItem() {
+            addInputItem('simpleBusinessItems', 'simple-business-input', '例: システム開発');
+        }
+
+        async function generatePurposesSimple() {
+            const businesses = getInputValues('.simple-business-input');
+
+            if (businesses.length === 0) {
+                alert('少なくとも1つの業種または事業内容を入力してください。');
+                return;
+            }
+
+            document.getElementById('loading').classList.add('show');
+            document.getElementById('results').classList.remove('show');
+            document.querySelector('.generate-btn').disabled = true;
+
+            try {
+                const businessesFormatted = businesses.map((b, i) => ({
+                    number: i + 1,
+                    customer: "",
+                    product: b,
+                    method: ""
+                }));
+                const selectedPurposes = await selectPurposesWithAI(businessesFormatted, []);
+                displayResults(selectedPurposes);
+                document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } catch (error) {
+                console.error('選定エラー:', error);
+                alert('目的の選定中にエラーが発生しました。もう一度お試しください。');
+            } finally {
+                document.getElementById('loading').classList.remove('show');
+                document.querySelector('.generate-btn').disabled = false;
+            }
+        }
+
+        function addInputItem(containerId, className, placeholder) {
+            const container = document.getElementById(containerId);
+            const newItem = document.createElement('div');
+            newItem.className = 'input-item';
+            newItem.innerHTML = `
+                <input type="text" placeholder="${placeholder}" class="${className}">
+                <button class="remove-btn" onclick="removeItem(this)">×</button>
+            `;
+            container.appendChild(newItem);
+        }
+
+        function removeItem(button) {
+            const container = button.closest('.input-item').parentElement;
+            const items = container.querySelectorAll('.input-item');
+            
+            if (items.length > 1) {
+                button.closest('.input-item').remove();
+                
+                const remainingItems = container.querySelectorAll('.input-item');
+                if (remainingItems.length === 1) {
+                    remainingItems[0].querySelector('.remove-btn').style.visibility = 'hidden';
+                }
+            }
+        }
+
+        function getInputValues(selector) {
+            const inputs = document.querySelectorAll(selector);
+            return Array.from(inputs)
+                .map(input => input.value.trim())
+                .filter(val => val.length > 0);
+        }
+
+        function displayResults(purposes) {
+            const purposeList = document.getElementById('purposeList');
+            const resultsCount = document.getElementById('resultsCount');
+            
+            purposeList.innerHTML = '';
+            
+            // アコーディオン用のHTMLキャッシュを作成
+            if (!window.accordionHtmlCache) {
+                window.accordionHtmlCache = '';
+                
+                for (const [category, purposes] of Object.entries(purposeDatabase)) {
+                    if (purposes.length === 0) continue; // 空のカテゴリはスキップ
+                    
+                    window.accordionHtmlCache += `
+                        <div class="select-category collapsed">
+                            <div class="select-category-header" onclick="toggleSelectCategory(this)">
+                                <h5>${category}</h5>
+                                <span class="select-category-toggle">▼</span>
+                            </div>
+                            <div class="select-category-items">`;
+                    
+                    purposes.forEach(purpose => {
+                        window.accordionHtmlCache += `
+                            <div class="select-purpose-option" onclick="handlePurposeSelection(this, '${escapeHtml(purpose).replace(/'/g, "\\'")}')" title="${escapeHtml(purpose)}">
+                                ${purpose}
+                            </div>`;
+                    });
+                    
+                    window.accordionHtmlCache += `
+                            </div>
+                        </div>`;
+                }
+            }
+            
+            // 単純な一覧表示（業種別セクションなし）
+            let globalCounter = 1;
+            purposes.forEach((item) => {
+                createPurposeItem(purposeList, globalCounter++, item.purpose);
+            });
+
+            resultsCount.textContent = `${purposes.length}個の目的が生成されました。編集・並び替えができます。`;
+            document.getElementById('results').classList.add('show');
+
+            window.purposeCounter = purposes.length;
+            
+            setTimeout(() => {
+                updateRemoveButtons();
+            }, 100);
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function createPurposeItem(container, number, selectedPurpose = '') {
+            const div = document.createElement('div');
+            div.className = 'purpose-item';
+            div.dataset.number = number;
+            // draggableをfalseに設定（ハンドルでのみドラッグ可能にする）
+            div.draggable = false;
+            
+            div.innerHTML = `
+                <div class="purpose-item-header">
+                    <span class="drag-handle" title="ドラッグして並び替え">☰</span>
+                    <span class="purpose-number">${number}</span>
+                    <input type="text" class="purpose-input-main" draggable="false" placeholder="目的を入力してください" value="${escapeHtml(selectedPurpose)}">
+                    <div class="purpose-controls">
+                        <button class="toggle-select-btn" onclick="toggleSelect(this)" title="一覧から選択">📋 一覧</button>
+                        <button class="remove-purpose-btn" onclick="removePurpose(this)">×</button>
+                    </div>
+                </div>
+                <div class="purpose-select-container">
+                    ${window.accordionHtmlCache}
+                </div>
+            `;
+            
+            container.appendChild(div);
+            setupDragAndDrop(div);
+        }
+
+        function setupDragAndDrop(item) {
+            const handle = item.querySelector('.drag-handle');
+            const input = item.querySelector('.purpose-input-main');
+            const buttons = item.querySelectorAll('button');
+            
+            // 入力欄とボタン上ではドラッグを無効化
+            input.addEventListener('mousedown', function(e) {
+                e.stopPropagation();
+                item.draggable = false;
+            });
+            
+            buttons.forEach(button => {
+                button.addEventListener('mousedown', function(e) {
+                    e.stopPropagation();
+                    item.draggable = false;
+                });
+            });
+            
+            // ハンドルでマウスダウンした時のみdraggableをtrueに
+            handle.addEventListener('mousedown', function(e) {
+                item.draggable = true;
+            });
+            
+            // マウスアップ時はdraggableをfalseに戻す
+            document.addEventListener('mouseup', function() {
+                item.draggable = false;
+            });
+            
+            item.addEventListener('dragstart', handleDragStart);
+            item.addEventListener('dragend', handleDragEnd);
+            item.addEventListener('dragover', handleDragOver);
+            item.addEventListener('drop', handleDrop);
+            item.addEventListener('dragleave', handleDragLeave);
+        }
+
+        let draggedItem = null;
+
+        function handleDragStart(e) {
+            draggedItem = this;
+            this.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', this.innerHTML);
+        }
+
+        function handleDragEnd(e) {
+            this.classList.remove('dragging');
+            document.querySelectorAll('.purpose-item').forEach(item => {
+                item.classList.remove('drag-over');
+            });
+        }
+
+        function handleDragOver(e) {
+            if (e.preventDefault) {
+                e.preventDefault();
+            }
+            
+            e.dataTransfer.dropEffect = 'move';
+            
+            if (this !== draggedItem) {
+                this.classList.add('drag-over');
+            }
+            
+            return false;
+        }
+
+        function handleDragLeave(e) {
+            this.classList.remove('drag-over');
+        }
+
+        function handleDrop(e) {
+            if (e.stopPropagation) {
+                e.stopPropagation();
+            }
+            
+            if (draggedItem !== this) {
+                const allItems = Array.from(document.querySelectorAll('.purpose-item'));
+                const draggedIndex = allItems.indexOf(draggedItem);
+                const targetIndex = allItems.indexOf(this);
+                
+                if (draggedIndex < targetIndex) {
+                    this.parentNode.insertBefore(draggedItem, this.nextSibling);
+                } else {
+                    this.parentNode.insertBefore(draggedItem, this);
+                }
+                
+                renumberPurposes();
+            }
+            
+            this.classList.remove('drag-over');
+            return false;
+        }
+
+        function toggleSelect(button) {
+            const purposeItem = button.closest('.purpose-item');
+            const selectContainer = purposeItem.querySelector('.purpose-select-container');
+            
+            if (selectContainer.classList.contains('show')) {
+                selectContainer.classList.remove('show');
+                button.textContent = '📋 一覧';
+            } else {
+                selectContainer.classList.add('show');
+                button.textContent = '📋 閉じる';
+            }
+        }
+
+        function toggleSelectCategory(header) {
+            const category = header.closest('.select-category');
+            category.classList.toggle('collapsed');
+        }
+
+        function handlePurposeSelection(element, purposeText) {
+            const purposeItem = element.closest('.purpose-item');
+            const mainInput = purposeItem.querySelector('.purpose-input-main');
+            const selectContainer = purposeItem.querySelector('.purpose-select-container');
+            const toggleBtn = purposeItem.querySelector('.toggle-select-btn');
+            
+            mainInput.value = purposeText;
+            selectContainer.classList.remove('show');
+            toggleBtn.textContent = '📋 一覧';
+        }
+
+        function addNewPurpose() {
+            window.purposeCounter = window.purposeCounter || document.querySelectorAll('.purpose-item').length;
+            window.purposeCounter++;
+            
+            const purposeList = document.getElementById('purposeList');
+            createPurposeItem(purposeList, window.purposeCounter);
+            renumberPurposes();
+            updateRemoveButtons();
+        }
+
+        function removePurpose(button) {
+            const purposeItem = button.closest('.purpose-item');
+            const items = document.querySelectorAll('.purpose-item');
+            
+            if (items.length > 1) {
+                purposeItem.remove();
+                renumberPurposes();
+                updateRemoveButtons();
+            }
+        }
+
+        function renumberPurposes() {
+            const items = document.querySelectorAll('.purpose-item');
+            items.forEach((item, index) => {
+                const number = index + 1;
+                item.dataset.number = number;
+                item.querySelector('.purpose-number').textContent = number;
+            });
+            window.purposeCounter = items.length;
+        }
+
+        function updateRemoveButtons() {
+            const items = document.querySelectorAll('.purpose-item');
+            const removeButtons = document.querySelectorAll('.remove-purpose-btn');
+            
+            removeButtons.forEach((btn) => {
+                btn.style.visibility = items.length === 1 ? 'hidden' : 'visible';
+            });
+        }
+
+        function copyAllPurposes() {
+            const items = document.querySelectorAll('.purpose-item');
+            const purposes = [];
+            
+            items.forEach((item, index) => {
+                const mainInput = item.querySelector('.purpose-input-main');
+                const purposeText = mainInput.value.trim();
+                
+                if (purposeText) {
+                    purposes.push(`${index + 1}. ${purposeText}`);
+                }
+            });
+
+            if (purposes.length === 0) {
+                alert('コピーする目的がありません。');
+                return;
+            }
+
+            const text = purposes.join('\n');
+            navigator.clipboard.writeText(text).then(() => {
+                showCopyNotification();
+            });
+        }
+
+        function showCopyNotification() {
+            const notification = document.getElementById('copyNotification');
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
