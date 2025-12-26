@@ -172,7 +172,7 @@ function isAllowedOrigin(origin, env) {
     return true;
   }
 
-  // GitHub Pages用: souzou-officeのみ許可
+  // GitHub Pages用
   if (origin === "https://souzou-office.github.io") {
     return true;
   }
