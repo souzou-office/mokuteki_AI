@@ -532,6 +532,10 @@
             font-size: 15px;
             font-family: inherit;
             transition: border-color 0.3s;
+            resize: none;
+            overflow: hidden;
+            min-height: 42px;
+            line-height: 1.4;
         }
 
         .purpose-input-main:focus {
@@ -835,6 +839,7 @@
                 min-width: 0;
                 font-size: 14px;
                 padding: 10px;
+                min-height: 40px;
             }
 
             .purpose-controls {
@@ -1727,7 +1732,7 @@ ${allPurposesText}
                 <div class="purpose-item-header">
                     <span class="drag-handle" title="ドラッグして並び替え">☰</span>
                     <span class="purpose-number">${number}</span>
-                    <input type="text" class="purpose-input-main" draggable="false" placeholder="目的を入力してください" value="${escapeHtml(selectedPurpose)}">
+                    <textarea class="purpose-input-main" draggable="false" placeholder="目的を入力してください" rows="1" oninput="autoResize(this)">${escapeHtml(selectedPurpose)}</textarea>
                     <div class="purpose-controls">
                         <button class="move-btn" onclick="moveUp(this)" title="上へ移動">↑</button>
                         <button class="move-btn" onclick="moveDown(this)" title="下へ移動">↓</button>
@@ -1742,6 +1747,10 @@ ${allPurposesText}
             
             container.appendChild(div);
             setupDragAndDrop(div);
+
+            // 初期表示時に高さを自動調整
+            const textarea = div.querySelector('.purpose-input-main');
+            setTimeout(() => autoResize(textarea), 0);
         }
 
         function setupDragAndDrop(item) {
@@ -1859,8 +1868,9 @@ ${allPurposesText}
             const mainInput = purposeItem.querySelector('.purpose-input-main');
             const selectContainer = purposeItem.querySelector('.purpose-select-container');
             const toggleBtn = purposeItem.querySelector('.toggle-select-btn');
-            
+
             mainInput.value = purposeText;
+            autoResize(mainInput);
             selectContainer.classList.remove('show');
             toggleBtn.textContent = '📋 一覧';
         }
@@ -1919,10 +1929,15 @@ ${allPurposesText}
         function updateRemoveButtons() {
             const items = document.querySelectorAll('.purpose-item');
             const removeButtons = document.querySelectorAll('.remove-purpose-btn');
-            
+
             removeButtons.forEach((btn) => {
                 btn.style.visibility = items.length === 1 ? 'hidden' : 'visible';
             });
+        }
+
+        function autoResize(textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = textarea.scrollHeight + 'px';
         }
 
         function copyAllPurposes() {
