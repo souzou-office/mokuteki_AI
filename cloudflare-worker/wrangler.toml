@@ -6,6 +6,11 @@ compatibility_date = "2024-01-01"
 # APIキーはCloudflareダッシュボードで設定するか、以下のコマンドで設定:
 # npx wrangler secret put ANTHROPIC_API_KEY
 
+# レート制限用KV
+[[kv_namespaces]]
+binding = "RATE_LIMIT_KV"
+id = "a03985f64dfc49a1bc35a87902522b60"
+
 [vars]
 # 許可するオリジン（GitHub Pagesなど）
 # ALLOWED_ORIGINS = "https://your-username.github.io"

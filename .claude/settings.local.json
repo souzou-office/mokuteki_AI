@@ -10,7 +10,8 @@
       "Bash(npx wrangler --version)",
       "Bash(npx wrangler whoami:*)",
       "Bash(npx wrangler deploy)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(npx wrangler:*)"
     ]
   }
 }

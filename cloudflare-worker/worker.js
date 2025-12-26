@@ -6,8 +6,18 @@
  *
  * 環境変数:
  * - ANTHROPIC_API_KEY: AnthropicのAPIキー
- * - ALLOWED_ORIGINS: 許可するオリジン（カンマ区切り、例: "https://example.com,https://example2.com"）
+ * - ALLOWED_ORIGINS: 許可するオリジン（カンマ区切り）
+ *
+ * レート制限:
+ * - 1IPあたり1日50回まで
  */
+
+// レート制限の設定
+const RATE_LIMIT = 50;           // 1IPあたりの最大リクエスト数
+const RATE_LIMIT_WINDOW = 86400; // 制限期間（秒）= 24時間
+
+// 管理者用シークレットキー（URLパラメータで指定すると制限解除）
+const ADMIN_SECRET = "souzou2024mokuteki";
 
 export default {
   async fetch(request, env, ctx) {
@@ -31,6 +41,40 @@ export default {
         status: 403,
         headers: getCORSHeaders(request, env),
       });
+    }
+
+    // 管理者キーのチェック（URLパラメータまたは環境変数）
+    const url = new URL(request.url);
+    const adminKey = url.searchParams.get("admin_key");
+    const isAdmin = adminKey === ADMIN_SECRET || adminKey === env.ADMIN_SECRET;
+
+    // クライアントIPを取得
+    const clientIP = request.headers.get("CF-Connecting-IP") || "unknown";
+
+    // レート制限チェック（KVが設定されていて、管理者でない場合）
+    if (env.RATE_LIMIT_KV && !isAdmin) {
+      const rateLimitResult = await checkRateLimit(env.RATE_LIMIT_KV, clientIP);
+
+      if (!rateLimitResult.allowed) {
+        return new Response(
+          JSON.stringify({
+            error: "Rate limit exceeded",
+            message: `1日あたりのリクエスト上限（${RATE_LIMIT}回）に達しました。明日また利用してください。`,
+            remaining: 0,
+            resetAt: rateLimitResult.resetAt
+          }),
+          {
+            status: 429,
+            headers: {
+              "Content-Type": "application/json",
+              "X-RateLimit-Limit": String(RATE_LIMIT),
+              "X-RateLimit-Remaining": "0",
+              "X-RateLimit-Reset": String(rateLimitResult.resetAt),
+              ...getCORSHeaders(request, env),
+            },
+          }
+        );
+      }
     }
 
     try {
@@ -75,6 +119,49 @@ export default {
 };
 
 /**
+ * レート制限をチェック・更新
+ */
+async function checkRateLimit(kv, clientIP) {
+  const key = `rate:${clientIP}`;
+  const now = Math.floor(Date.now() / 1000);
+
+  // 現在のカウントを取得
+  const data = await kv.get(key, { type: "json" });
+
+  if (!data) {
+    // 初回アクセス
+    const resetAt = now + RATE_LIMIT_WINDOW;
+    await kv.put(key, JSON.stringify({ count: 1, resetAt }), {
+      expirationTtl: RATE_LIMIT_WINDOW
+    });
+    return { allowed: true, remaining: RATE_LIMIT - 1, resetAt };
+  }
+
+  // 期限切れチェック
+  if (now >= data.resetAt) {
+    // リセット
+    const resetAt = now + RATE_LIMIT_WINDOW;
+    await kv.put(key, JSON.stringify({ count: 1, resetAt }), {
+      expirationTtl: RATE_LIMIT_WINDOW
+    });
+    return { allowed: true, remaining: RATE_LIMIT - 1, resetAt };
+  }
+
+  // 制限チェック
+  if (data.count >= RATE_LIMIT) {
+    return { allowed: false, remaining: 0, resetAt: data.resetAt };
+  }
+
+  // カウント増加
+  const newCount = data.count + 1;
+  await kv.put(key, JSON.stringify({ count: newCount, resetAt: data.resetAt }), {
+    expirationTtl: data.resetAt - now
+  });
+
+  return { allowed: true, remaining: RATE_LIMIT - newCount, resetAt: data.resetAt };
+}
+
+/**
  * 許可されたオリジンかチェック
  */
 function isAllowedOrigin(origin, env) {
@@ -85,8 +172,8 @@ function isAllowedOrigin(origin, env) {
     return true;
   }
 
-  // GitHub Pages用: github.ioを許可
-  if (origin.includes("github.io")) {
+  // GitHub Pages用: souzou-officeのみ許可
+  if (origin === "https://souzou-office.github.io") {
     return true;
   }
 
