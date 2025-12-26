@@ -545,6 +545,30 @@
             flex-shrink: 0;
         }
 
+        .move-btn {
+            background: #6c757d;
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .move-btn:hover {
+            background: #5a6268;
+        }
+
+        .move-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
         .toggle-select-btn {
             background: #667eea;
             color: white;
@@ -827,6 +851,12 @@
                 width: 28px;
                 height: 28px;
                 font-size: 14px;
+            }
+
+            .move-btn {
+                display: flex;
+                width: 28px;
+                height: 28px;
             }
 
             /* 入力欄のスマホ対応 */
@@ -1699,6 +1729,8 @@ ${allPurposesText}
                     <span class="purpose-number">${number}</span>
                     <input type="text" class="purpose-input-main" draggable="false" placeholder="目的を入力してください" value="${escapeHtml(selectedPurpose)}">
                     <div class="purpose-controls">
+                        <button class="move-btn" onclick="moveUp(this)" title="上へ移動">↑</button>
+                        <button class="move-btn" onclick="moveDown(this)" title="下へ移動">↓</button>
                         <button class="toggle-select-btn" onclick="toggleSelect(this)" title="一覧から選択">📋 一覧</button>
                         <button class="remove-purpose-btn" onclick="removePurpose(this)">×</button>
                     </div>
@@ -1862,6 +1894,26 @@ ${allPurposesText}
                 item.querySelector('.purpose-number').textContent = number;
             });
             window.purposeCounter = items.length;
+        }
+
+        function moveUp(button) {
+            const purposeItem = button.closest('.purpose-item');
+            const previousItem = purposeItem.previousElementSibling;
+
+            if (previousItem && previousItem.classList.contains('purpose-item')) {
+                purposeItem.parentNode.insertBefore(purposeItem, previousItem);
+                renumberPurposes();
+            }
+        }
+
+        function moveDown(button) {
+            const purposeItem = button.closest('.purpose-item');
+            const nextItem = purposeItem.nextElementSibling;
+
+            if (nextItem && nextItem.classList.contains('purpose-item')) {
+                purposeItem.parentNode.insertBefore(nextItem, purposeItem);
+                renumberPurposes();
+            }
         }
 
         function updateRemoveButtons() {
