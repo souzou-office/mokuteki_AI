@@ -766,16 +766,103 @@
 
         @media (max-width: 768px) {
             .content {
-                padding: 20px;
+                padding: 15px;
             }
-            
+
             .header h1 {
-                font-size: 22px;
+                font-size: 20px;
             }
-            
+
+            .header p {
+                font-size: 12px;
+            }
+
             .generate-btn {
                 padding: 12px 30px;
                 font-size: 16px;
+                width: 100%;
+            }
+
+            /* 結果表示部分のスマホ対応 */
+            .purpose-item {
+                padding: 12px;
+            }
+
+            .purpose-item-header {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .drag-handle {
+                display: none;
+            }
+
+            .purpose-number {
+                width: 25px;
+                height: 25px;
+                line-height: 25px;
+                font-size: 12px;
+            }
+
+            .purpose-input-main {
+                flex: 1 1 100%;
+                order: 2;
+                width: 100%;
+                min-width: 0;
+                font-size: 14px;
+                padding: 10px;
+            }
+
+            .purpose-controls {
+                order: 1;
+                margin-left: auto;
+            }
+
+            .toggle-select-btn {
+                padding: 6px 10px;
+                font-size: 12px;
+            }
+
+            .remove-purpose-btn {
+                width: 28px;
+                height: 28px;
+                font-size: 14px;
+            }
+
+            /* 入力欄のスマホ対応 */
+            .input-item {
+                flex-wrap: wrap;
+            }
+
+            .input-item input {
+                flex: 1 1 100%;
+                margin-bottom: 8px;
+            }
+
+            .remove-btn {
+                width: 100%;
+                height: 36px;
+            }
+
+            .add-btn, .add-purpose-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .copy-all-btn {
+                width: 100%;
+            }
+
+            .method-card {
+                padding: 20px;
+            }
+
+            .method-icon {
+                font-size: 40px;
+            }
+
+            .method-card h3 {
+                font-size: 18px;
             }
         }
     </style>
