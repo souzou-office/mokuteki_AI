@@ -3,7 +3,14 @@
     "allow": [
       "Bash(tar:*)",
       "Bash(gh auth:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nAdd Cloudflare Workers proxy for secure API key management\n\n- Add cloudflare-worker/ directory with proxy API code\n- Update index.html to use Cloudflare Worker endpoint\n- Update .gitignore for Cloudflare and environment files\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(git remote set-url:*)",
+      "Bash(git push:*)",
+      "Bash(npx wrangler --version)",
+      "Bash(npx wrangler whoami:*)",
+      "Bash(npx wrangler deploy)",
+      "Bash(git commit:*)"
     ]
   }
 }
