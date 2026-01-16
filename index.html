@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>会社設立目的自動生成システム</title>
+    <title>もくてき作成くん</title>
     <style>
         * {
             margin: 0;
@@ -12,778 +12,502 @@
         }
 
         body {
-            font-family: 'Segoe UI', 'Yu Gothic', 'Meiryo', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f5f7fa;
+            color: #2d3748;
             min-height: 100vh;
-            padding: 20px;
         }
 
-        .container {
+        /* ヘッダー */
+        header {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-inner {
             max-width: 1200px;
             margin: 0 auto;
+            padding: 12px 32px;
+        }
+
+        .logo {
+            height: 100px;
+            width: auto;
+        }
+
+        /* メインコンテナ */
+        .main {
+            max-width: 900px;
+            margin: 60px auto;
+            padding: 0 32px;
+        }
+
+        /* カード */
+        .card {
             background: white;
             border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            overflow: hidden;
+            padding: 48px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+            margin-bottom: 32px;
         }
 
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 30px;
-            text-align: center;
-        }
-
-        .header h1 {
-            font-size: 28px;
-            margin-bottom: 10px;
-        }
-
-        .header p {
-            font-size: 14px;
-            opacity: 0.9;
-        }
-
-        .content {
-            padding: 40px;
-        }
-
-        .input-method-selection {
-            padding: 40px 20px;
-        }
-
-        .method-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .method-card {
-            background: white;
-            border: 3px solid #e0e0e0;
-            border-radius: 20px;
-            padding: 35px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .method-card:hover {
-            border-color: #667eea;
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
-        }
-
-        .method-icon {
-            font-size: 60px;
-            margin-bottom: 20px;
-        }
-
-        .method-card h3 {
-            color: #333;
+        .card-title {
             font-size: 24px;
-            margin-bottom: 10px;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 12px;
         }
 
-        .method-description {
-            color: #666;
+        .card-subtitle {
             font-size: 15px;
-            margin-bottom: 20px;
+            color: #718096;
+            margin-bottom: 36px;
+            line-height: 1.6;
         }
 
-        .method-features {
-            text-align: left;
-            list-style: none;
-            margin: 20px 0;
-            padding: 0;
+        /* 入力フィールド */
+        .input-group {
+            margin-bottom: 16px;
         }
 
-        .method-features li {
-            color: #555;
-            font-size: 14px;
-            margin-bottom: 10px;
-            padding-left: 25px;
-            position: relative;
+        .input-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
         }
 
-        .method-features li:before {
-            content: "✓";
-            color: #667eea;
-            font-weight: bold;
-            position: absolute;
-            left: 0;
-        }
-
-        .method-example {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 10px;
-            font-size: 13px;
-            color: #666;
-            margin: 20px 0;
-        }
-
-        .method-select-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 50px;
-            cursor: pointer;
+        .input-field {
+            flex: 1;
+            padding: 16px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
             font-size: 16px;
-            font-weight: bold;
             transition: all 0.2s;
-            width: 100%;
-        }
-
-        .method-select-btn:hover {
-            transform: scale(1.05);
-        }
-
-        .back-btn-container {
-            margin-bottom: 20px;
-        }
-
-        .back-btn {
-            background: #6c757d;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.2s;
-        }
-
-        .back-btn:hover {
-            background: #5a6268;
-        }
-
-        .simple-input-section, .detailed-input-section {
-            padding: 20px 0;
-        }
-
-        .section-header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .section-header h2 {
-            color: #333;
-            font-size: 24px;
-            margin-bottom: 10px;
-        }
-
-        .section-header p {
-            color: #666;
-            font-size: 15px;
-        }
-
-        .business-card {
-            background: #ffffff;
-            border: 2px solid #e0e0e0;
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 25px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            transition: all 0.3s;
-        }
-
-        .business-card:hover {
-            border-color: #667eea;
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #f0f0f0;
-        }
-
-        .card-header h3 {
-            color: #667eea;
-            font-size: 20px;
-            margin: 0;
-        }
-
-        .business-number {
-            font-weight: bold;
-        }
-
-        .remove-card-btn {
-            background: #dc3545;
-            color: white;
-            border: none;
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 20px;
-            transition: all 0.2s;
-            font-weight: bold;
-        }
-
-        .remove-card-btn:hover {
-            background: #c82333;
-            transform: scale(1.1);
-        }
-
-        .card-body {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .form-group label {
-            font-weight: 600;
-            color: #333;
-            font-size: 15px;
-        }
-
-        .form-input {
-            width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 15px;
             font-family: inherit;
-            transition: border-color 0.3s;
         }
 
-        .form-input:focus {
+        .input-field:focus {
             outline: none;
             border-color: #667eea;
-            background: #f8f9ff;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
         }
 
-        .add-business-btn {
-            background: #667eea;
-            color: white;
-            border: none;
-            padding: 15px 30px;
+        .input-field::placeholder {
+            color: #a0aec0;
+        }
+
+        .btn-remove {
+            width: 52px;
+            height: 52px;
+            border: 2px solid #e2e8f0;
+            background: white;
             border-radius: 12px;
             cursor: pointer;
-            font-size: 16px;
+            color: #cbd5e0;
+            font-size: 24px;
             transition: all 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 600;
+        }
+
+        .btn-remove:hover {
+            background: #fff5f5;
+            border-color: #fc8181;
+            color: #e53e3e;
+        }
+
+        .btn-add {
             width: 100%;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-
-        .add-business-btn:hover {
-            background: #5568d3;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-        }
-
-        .input-section {
-            margin-bottom: 30px;
-        }
-
-        .input-group {
-            margin-bottom: 25px;
-        }
-
-        .input-group label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: #333;
-            font-size: 16px;
-        }
-
-        .input-item {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 10px;
-            align-items: flex-start;
-        }
-
-        .input-item input {
-            flex: 1;
-            padding: 12px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
+            padding: 14px;
+            border: 2px dashed #cbd5e0;
+            background: transparent;
+            border-radius: 12px;
+            cursor: pointer;
+            color: #718096;
             font-size: 15px;
-            font-family: inherit;
-            transition: border-color 0.3s;
+            font-weight: 500;
+            transition: all 0.2s;
+            margin-top: 8px;
         }
 
-        .input-item input:focus {
-            outline: none;
+        .btn-add:hover {
             border-color: #667eea;
+            color: #667eea;
+            background: #faf5ff;
         }
 
-        .remove-btn {
-            background: #dc3545;
-            color: white;
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 20px;
-            transition: all 0.2s;
-            flex-shrink: 0;
-        }
-
-        .remove-btn:hover {
-            background: #c82333;
-            transform: scale(1.05);
-        }
-
-        .add-btn {
-            background: #28a745;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 15px;
-            transition: all 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .add-btn:hover {
-            background: #218838;
-            transform: translateY(-2px);
-        }
-
-        .section-title {
-            background: #f8f9fa;
-            padding: 15px 20px;
-            border-radius: 10px;
-            margin-bottom: 15px;
-            border-left: 5px solid #667eea;
-        }
-
-        .section-title h3 {
-            color: #333;
-            font-size: 18px;
-            margin: 0;
-        }
-
-        .button-container {
-            text-align: center;
-            margin: 30px 0;
-        }
-
-        .generate-btn {
+        .btn-primary {
+            width: 100%;
+            padding: 20px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
             border: none;
-            padding: 15px 50px;
+            border-radius: 14px;
+            color: white;
             font-size: 18px;
-            border-radius: 50px;
+            font-weight: 700;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            font-weight: bold;
+            margin-top: 36px;
+            transition: all 0.3s;
+            box-shadow: 0 8px 16px rgba(102, 126, 234, 0.25);
         }
 
-        .generate-btn:hover {
+        .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 12px 24px rgba(102, 126, 234, 0.35);
         }
 
-        .generate-btn:active {
+        .btn-primary:active {
             transform: translateY(0);
         }
 
-        .generate-btn:disabled {
-            background: #ccc;
+        .btn-primary:disabled {
+            background: #cbd5e0;
             cursor: not-allowed;
             transform: none;
+            box-shadow: none;
         }
 
-        .results-section {
-            margin-top: 40px;
-            display: none;
-        }
-
-        .results-section.show {
-            display: block;
-        }
-
-        .results-header {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            border-left: 5px solid #667eea;
-        }
-
-        .results-header h2 {
-            color: #333;
-            font-size: 22px;
-            margin-bottom: 10px;
-        }
-
-        .results-header p {
-            color: #666;
-            font-size: 14px;
-        }
-
-        .collapse-all-btn {
-            background: #667eea;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-            white-space: nowrap;
-            transition: all 0.2s;
-        }
-
-        .collapse-all-btn:hover {
-            background: #5568d3;
-            transform: translateY(-2px);
-        }
-
-        .purpose-list {
-            list-style: none;
-        }
-
-        .purpose-item {
-            background: white;
-            padding: 15px 20px;
-            margin-bottom: 12px;
-            border-radius: 10px;
-            border-left: 4px solid #667eea;
-            transition: all 0.2s;
-        }
-
-        .purpose-item:hover {
-            background: #f8f9ff;
-            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1);
-        }
-
-        .purpose-item.dragging {
-            opacity: 0.5;
-            transform: scale(0.95);
-        }
-
-        .purpose-item.drag-over {
-            border-top: 3px solid #667eea;
-        }
-
-        .drag-handle {
-            cursor: grab;
-            color: #6c757d;
-            font-size: 20px;
-            padding: 5px;
-            user-select: none;
-            flex-shrink: 0;
-        }
-
-        .drag-handle:active {
-            cursor: grabbing;
-        }
-
-        .drag-handle:hover {
-            color: #495057;
-        }
-
-        .purpose-item-header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 10px;
-            flex-wrap: nowrap;
-        }
-
-        .purpose-number {
-            display: inline-block;
-            background: #667eea;
-            color: white;
-            width: 30px;
-            height: 30px;
-            line-height: 30px;
-            text-align: center;
-            border-radius: 50%;
-            font-weight: bold;
-            font-size: 14px;
-            flex-shrink: 0;
-        }
-
-        .purpose-input-main {
-            flex: 1;
-            min-width: 0;
-            padding: 10px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 15px;
-            font-family: inherit;
-            transition: border-color 0.3s;
-            resize: none;
-            overflow: hidden;
-            min-height: 42px;
-            line-height: 1.4;
-        }
-
-        .purpose-input-main:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        .purpose-controls {
-            display: flex;
-            gap: 8px;
-            flex-shrink: 0;
-        }
-
-        .move-btn {
-            background: #6c757d;
-            color: white;
-            border: none;
-            width: 30px;
-            height: 30px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-        }
-
-        .move-btn:hover {
-            background: #5a6268;
-        }
-
-        .move-btn:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-        }
-
-        .toggle-select-btn {
-            background: #667eea;
-            color: white;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 13px;
-            white-space: nowrap;
-            transition: all 0.2s;
-            flex-shrink: 0;
-        }
-
-        .toggle-select-btn:hover {
-            background: #5568d3;
-        }
-
-        .purpose-select-container {
-            display: none;
-            margin-top: 10px;
-            background: white;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            max-height: 400px;
-            overflow-y: auto;
-        }
-
-        .purpose-select-container.show {
-            display: block;
-        }
-
-        .select-category {
-            border-bottom: 1px solid #e0e0e0;
-        }
-
-        .select-category:last-child {
-            border-bottom: none;
-        }
-
-        .select-category-header {
-            background: #f8f9fa;
-            padding: 12px 15px;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: background 0.2s;
-            user-select: none;
-        }
-
-        .select-category-header:hover {
-            background: #e9ecef;
-        }
-
-        .select-category-header h5 {
-            margin: 0;
-            font-size: 15px;
-            font-weight: 600;
-            color: #667eea;
-        }
-
-        .select-category-toggle {
-            font-size: 16px;
-            color: #6c757d;
-            transition: transform 0.3s;
-        }
-
-        .select-category.collapsed .select-category-toggle {
-            transform: rotate(-90deg);
-        }
-
-        .select-category-items {
-            max-height: 300px;
-            overflow: hidden;
-            transition: max-height 0.3s ease-out;
-        }
-
-        .select-category.collapsed .select-category-items {
-            max-height: 0;
-        }
-
-        .select-purpose-option {
-            padding: 10px 15px;
-            cursor: pointer;
-            transition: background 0.2s;
-            font-size: 14px;
-            line-height: 1.5;
-            color: #333;
-            border-bottom: 1px solid #f0f0f0;
-        }
-
-        .select-purpose-option:last-child {
-            border-bottom: none;
-        }
-
-        .select-purpose-option:hover {
-            background: #f8f9ff;
-            color: #667eea;
-        }
-
-        .add-purpose-btn {
-            background: #667eea;
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 15px;
-            margin-top: 15px;
-            transition: all 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .add-purpose-btn:hover {
-            background: #5568d3;
-            transform: translateY(-2px);
-        }
-
-        .remove-purpose-btn {
-            background: #dc3545;
-            color: white;
-            border: none;
-            width: 30px;
-            height: 30px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-            flex-shrink: 0;
-            transition: all 0.2s;
-        }
-
-        .remove-purpose-btn:hover {
-            background: #c82333;
-            transform: scale(1.1);
-        }
-
-        .copy-all-btn {
-            background: #28a745;
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            font-size: 16px;
-            border-radius: 50px;
-            cursor: pointer;
-            margin-top: 20px;
-            transition: all 0.2s;
-        }
-
-        .copy-all-btn:hover {
-            background: #218838;
-            transform: translateY(-2px);
-        }
-
+        /* ローディング */
         .loading {
-            text-align: center;
-            padding: 40px;
             display: none;
+            text-align: center;
+            padding: 100px 20px;
         }
 
         .loading.show {
             display: block;
         }
 
-        .loading-spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #667eea;
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid #e2e8f0;
+            border-top-color: #667eea;
             border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 24px;
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            to { transform: rotate(360deg); }
         }
 
-        .note {
-            background: #fff3cd;
-            border: 1px solid #ffc107;
-            padding: 15px;
-            border-radius: 10px;
-            margin-top: 20px;
-            color: #856404;
-            font-size: 14px;
+        .loading-text {
+            font-size: 16px;
+            color: #667eea;
+            font-weight: 600;
         }
 
-        .copy-notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: #28a745;
-            color: white;
-            padding: 15px 25px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        /* 結果エリア */
+        .results {
             display: none;
-            animation: slideIn 0.3s ease-out;
+        }
+
+        .results.show {
+            display: block;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 24px;
+            border-bottom: 2px solid #f7fafc;
+        }
+
+        .results-info {
+            flex: 1;
+        }
+
+        .results-title {
+            font-size: 26px;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 6px;
+        }
+
+        .results-count {
+            font-size: 14px;
+            color: #a0aec0;
+        }
+
+        .btn-copy {
+            padding: 16px 32px;
+            background: #48bb78;
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(72, 187, 120, 0.25);
+        }
+
+        .btn-copy:hover {
+            background: #38a169;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(72, 187, 120, 0.35);
+        }
+
+        /* 目的リスト */
+        .purpose-item {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            transition: all 0.2s;
+        }
+
+        .purpose-item:hover {
+            border-color: #cbd5e0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .drag-icon {
+            cursor: grab;
+            color: #cbd5e0;
+            font-size: 24px;
+            user-select: none;
+        }
+
+        .drag-icon:active {
+            cursor: grabbing;
+        }
+
+        .purpose-num {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 15px;
+            flex-shrink: 0;
+        }
+
+        .purpose-text {
+            flex: 1;
+            border: none;
+            background: transparent;
+            font-size: 16px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: background 0.2s;
+            font-family: inherit;
+        }
+
+        .purpose-text:focus {
+            outline: none;
+            background: #f7fafc;
+        }
+
+        .purpose-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-icon {
+            width: 40px;
+            height: 40px;
+            border: 1px solid #e2e8f0;
+            background: #f7fafc;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            font-size: 18px;
+        }
+
+        .btn-icon:hover {
+            background: white;
+            border-color: #cbd5e0;
+        }
+
+        .btn-icon.delete:hover {
+            background: #fff5f5;
+            border-color: #fc8181;
+            color: #e53e3e;
+        }
+
+        .btn-add-purpose {
+            width: 100%;
+            padding: 16px;
+            border: 2px dashed #cbd5e0;
+            background: transparent;
+            border-radius: 12px;
+            cursor: pointer;
+            color: #718096;
+            font-size: 15px;
+            font-weight: 500;
+            transition: all 0.2s;
+            margin-top: 16px;
+        }
+
+        .btn-add-purpose:hover {
+            border-color: #667eea;
+            color: #667eea;
+            background: #faf5ff;
+        }
+
+        /* モーダル */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
             z-index: 1000;
         }
 
-        .copy-notification.show {
+        .modal-overlay.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 32px;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 700px;
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            padding: 28px 32px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a202c;
+        }
+
+        .btn-close {
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: #f7fafc;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 24px;
+            color: #a0aec0;
+            transition: all 0.2s;
+        }
+
+        .btn-close:hover {
+            background: #edf2f7;
+            color: #718096;
+        }
+
+        .modal-body {
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .category {
+            border-bottom: 1px solid #f7fafc;
+        }
+
+        .category-header {
+            padding: 20px 32px;
+            background: #fafbfc;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.2s;
+        }
+
+        .category-header:hover {
+            background: #f1f5f9;
+        }
+
+        .category-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .category-icon {
+            color: #cbd5e0;
+            transition: transform 0.3s;
+        }
+
+        .category.collapsed .category-icon {
+            transform: rotate(-90deg);
+        }
+
+        .category-list {
+            max-height: 600px;
+            overflow: hidden;
+            transition: max-height 0.3s;
+        }
+
+        .category.collapsed .category-list {
+            max-height: 0;
+        }
+
+        .category-item {
+            padding: 16px 32px;
+            cursor: pointer;
+            font-size: 15px;
+            color: #4a5568;
+            border-bottom: 1px solid #f7fafc;
+            transition: all 0.2s;
+            line-height: 1.6;
+        }
+
+        .category-item:hover {
+            background: #faf5ff;
+            padding-left: 40px;
+            color: #667eea;
+        }
+
+        /* 通知 */
+        .toast {
+            position: fixed;
+            top: 32px;
+            right: 32px;
+            background: #48bb78;
+            color: white;
+            padding: 16px 28px;
+            border-radius: 14px;
+            box-shadow: 0 8px 24px rgba(72, 187, 120, 0.3);
+            display: none;
+            z-index: 2000;
+            font-weight: 600;
+            font-size: 15px;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .toast.show {
             display: block;
         }
 
         @keyframes slideIn {
             from {
-                transform: translateX(400px);
+                transform: translateX(100px);
                 opacity: 0;
             }
             to {
@@ -792,219 +516,180 @@
             }
         }
 
+        /* レスポンシブ */
         @media (max-width: 768px) {
-            .content {
-                padding: 15px;
+            .header-inner {
+                padding: 12px 20px;
             }
 
-            .header h1 {
+            .logo {
+                height: 70px;
+            }
+
+            .main {
+                margin: 32px auto;
+                padding: 0 16px;
+            }
+
+            .card {
+                padding: 32px 24px;
+            }
+
+            .card-title {
                 font-size: 20px;
             }
 
-            .header p {
-                font-size: 12px;
+            .card-subtitle {
+                font-size: 14px;
+                margin-bottom: 24px;
             }
 
-            .generate-btn {
-                padding: 12px 30px;
+            .input-field {
+                padding: 14px 16px;
+                font-size: 15px;
+            }
+
+            .btn-remove {
+                width: 48px;
+                height: 48px;
+            }
+
+            .btn-primary {
+                padding: 18px;
                 font-size: 16px;
+            }
+
+            .results-header {
+                flex-direction: column;
+                gap: 16px;
+                align-items: stretch;
+            }
+
+            .results-title {
+                font-size: 22px;
+            }
+
+            .btn-copy {
                 width: 100%;
+                text-align: center;
             }
 
-            /* 結果表示部分のスマホ対応 */
             .purpose-item {
-                padding: 12px;
-            }
-
-            .purpose-item-header {
+                padding: 16px;
+                gap: 12px;
                 flex-wrap: wrap;
-                gap: 10px;
             }
 
-            .drag-handle {
+            .drag-icon {
                 display: none;
             }
 
-            .purpose-number {
-                width: 25px;
-                height: 25px;
-                line-height: 25px;
-                font-size: 12px;
-            }
-
-            .purpose-input-main {
+            .purpose-text {
                 flex: 1 1 100%;
-                order: 2;
-                width: 100%;
-                min-width: 0;
-                font-size: 14px;
-                padding: 10px;
-                min-height: 40px;
+                order: 3;
+                font-size: 15px;
             }
 
-            .purpose-controls {
-                order: 1;
+            .purpose-num {
+                width: 32px;
+                height: 32px;
+                font-size: 14px;
+            }
+
+            .purpose-actions {
                 margin-left: auto;
             }
 
-            .toggle-select-btn {
-                padding: 6px 10px;
-                font-size: 12px;
-            }
-
-            .remove-purpose-btn {
-                width: 28px;
-                height: 28px;
-                font-size: 14px;
-            }
-
-            .move-btn {
-                display: flex;
-                width: 28px;
-                height: 28px;
-            }
-
-            /* 入力欄のスマホ対応 */
-            .input-item {
-                flex-wrap: wrap;
-            }
-
-            .input-item input {
-                flex: 1 1 100%;
-                margin-bottom: 8px;
-            }
-
-            .remove-btn {
-                width: 100%;
+            .btn-icon {
+                width: 36px;
                 height: 36px;
             }
 
-            .add-btn, .add-purpose-btn {
-                width: 100%;
-                justify-content: center;
+            .modal-overlay.show {
+                padding: 16px;
             }
 
-            .copy-all-btn {
-                width: 100%;
+            .modal-header {
+                padding: 20px 24px;
             }
 
-            .method-card {
-                padding: 20px;
+            .category-header {
+                padding: 16px 24px;
             }
 
-            .method-icon {
-                font-size: 40px;
-            }
-
-            .method-card h3 {
-                font-size: 18px;
+            .category-item {
+                padding: 14px 24px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>🏢 会社設立目的 自動生成システム</h1>
-            <p>事業内容を入力するだけで、最適な会社目的を自動生成します</p>
+    <header>
+        <div class="header-inner">
+            <img src="Gemini_Generated_Image_galv48galv48galv (1).png" alt="もくてき作成くん" class="logo">
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="card" id="inputCard">
+            <h1 class="card-title">事業内容を入力</h1>
+            <p class="card-subtitle">
+                業種や事業内容を入力してください。重要なものから順番に、3年以内に予定している事業も含めて記入してください。
+            </p>
+
+            <div class="input-group" id="inputList">
+                <div class="input-row">
+                    <textarea class="input-field business-input" placeholder="例：Webサイト制作、飲食店経営、不動産仲介" rows="2"></textarea>
+                    <button class="btn-remove" onclick="removeInput(this)" style="visibility: hidden;">×</button>
+                </div>
+            </div>
+
+            <button class="btn-add" onclick="addInput()">+ 事業を追加</button>
+
+            <button class="btn-primary" onclick="generate()">
+                目的を自動生成
+            </button>
         </div>
 
-        <div class="content">
-            <!-- 入力方法選択画面 -->
-            <div class="input-method-selection" id="methodSelection">
-                <h2 style="text-align: center; color: #333; margin-bottom: 30px;">事業内容を入力してください</h2>
-                
-                <div class="method-cards" style="max-width: 600px;">
-                    <div class="method-card" onclick="selectMethod('simple')">
-                        <div class="method-icon">✨</div>
-                        <h3>事業内容入力</h3>
-                        <p class="method-description">業種や事業内容を入力してください</p>
-                        <ul class="method-features">
-                            <li>1〜2分で完了</li>
-                            <li>業種名だけでもOK</li>
-                            <li>重要度が高いものから入力</li>
-                        </ul>
-                        <div class="method-example">
-                            例: 不動産業、飲食店、IT企業
-                        </div>
-                        <button class="method-select-btn">入力を始める</button>
-                    </div>
-                </div>
-            </div>
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p class="loading-text">AIが事業目的を生成しています...</p>
+        </div>
 
-            <!-- 簡単入力画面 -->
-            <div class="simple-input-section" id="simpleInput" style="display: none;">
-                <div class="section-header">
-                    <h2>✨ 事業内容入力</h2>
-                    <p>業種や事業内容を入力してください</p>
-                </div>
-
-                <div class="input-group">
-                    <div class="section-title">
-                        <h3>💼 業種・事業内容</h3>
-                    </div>
-                    <p style="color: #666; font-size: 14px; margin-bottom: 15px;">
-                        ※ 重要度が高いものから順に入力してください<br>
-                        ※ 3年後くらいまでに行う予定のある事業も含めて入力してください
-                    </p>
-                    <div id="simpleBusinessItems">
-                        <div class="input-item">
-                            <input type="text" placeholder="例: 不動産業、Webサイト制作、飲食店経営" class="simple-business-input">
-                            <button class="remove-btn" onclick="removeItem(this)" style="visibility: hidden;">×</button>
-                        </div>
-                    </div>
-                    <button class="add-btn" onclick="addSimpleBusinessItem()">
-                        <span>➕</span> 追加
-                    </button>
-                </div>
-
-                <div class="button-container">
-                    <button class="generate-btn" onclick="generatePurposesSimple()">
-                        目的を自動選定する
-                    </button>
-                </div>
-
-                <div class="note">
-                    💡 <strong>ヒント:</strong> 業種名や事業内容を入力するだけで、AIが最適な会社目的を選定します。
-                </div>
-            </div>
-
-            <div class="loading" id="loading">
-                <div class="loading-spinner"></div>
-                <p>AIが最適な目的を選定中...</p>
-            </div>
-
-            <div class="results-section" id="results">
+        <div class="results" id="results">
+            <div class="card">
                 <div class="results-header">
-                    <div>
-                        <h2>選定された会社目的</h2>
-                        <p id="resultsCount">目的が選定されました。業種ごとに分類し、編集・並び替えができます。</p>
+                    <div class="results-info">
+                        <h2 class="results-title">生成された事業目的</h2>
+                        <p class="results-count" id="count"></p>
                     </div>
+                    <button class="btn-copy" onclick="copyAll()">コピー</button>
                 </div>
 
-                <div class="purpose-list" id="purposeList">
-                </div>
+                <div id="purposeList"></div>
 
-                <button class="add-purpose-btn" onclick="addNewPurpose()">
-                    ➕ 目的を追加
-                </button>
-
-                <div class="button-container">
-                    <button class="copy-all-btn" onclick="copyAllPurposes()">
-                        📋 すべての目的をコピー
-                    </button>
-                </div>
+                <button class="btn-add-purpose" onclick="addPurpose()">+ 目的を追加</button>
             </div>
+        </div>
+    </main>
+
+    <div class="modal-overlay" id="modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">目的を選択</h3>
+                <button class="btn-close" onclick="closeModal()">×</button>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
         </div>
     </div>
 
-    <div class="copy-notification" id="copyNotification">
-        ✓ コピーしました!
-    </div>
+    <div class="toast" id="toast">コピーしました</div>
 
     <script>
-        // 目的データベース（提供されたドキュメントから）
-        const purposeDatabase = {
+        // ============================================
+        // 完全な目的データベース（23業種400+目的）
+        // ============================================
+        const db = {
             "情報通信業": [
                 "コンピュータのソフトウェア及びハードウェア並びに通信・情報処理機器の企画、研究、開発、設計、製造、販売、保守、リース、賃貸及び輸出入並びにそれらに関するコンサルティング業務",
                 "インターネット等の通信ネットワーク及び電子技術を利用した各種情報提供サービス及び情報収集サービス",
@@ -1409,90 +1094,103 @@
             ]
         };
 
+        // ============================================
         // キーワードと業種のマッピング
+        // ============================================
         const keywordMapping = {
-            "情報通信業": ["IT", "ソフトウェア", "システム", "Web", "アプリ", "AI", "人工知能", "機械学習", "IoT", 
+            "情報通信業": ["IT", "ソフトウェア", "システム", "Web", "アプリ", "AI", "人工知能", "機械学習", "IoT",
                         "クラウド", "SaaS", "セキュリティ", "ネットワーク", "DX", "デジタル", "EC", "電子商取引",
                         "マーケティング", "SEO", "SEM", "SNS", "インターネット", "通信", "データ", "ビッグデータ",
-                        "コンサルティング", "開発", "プログラミング", "コーディング", "エンジニア"],
-            "飲食店・宿泊業": ["飲食店", "レストラン", "カフェ", "居酒屋", "ホテル", "旅館", "民泊", "宿泊", 
-                           "料理", "食事", "弁当", "ケータリング", "パン", "ケーキ"],
-            "卸売・小売業": ["販売", "小売", "卸売", "EC", "通販", "オンラインショップ", "物販", "商品", "輸入", 
-                        "輸出", "貿易", "雑貨", "アパレル", "ファッション", "化粧品", "家電", "食品"],
+                        "コンサルティング", "開発", "プログラミング", "コーディング", "エンジニア", "ホームページ", "HP制作"],
+            "飲食店・宿泊業": ["飲食店", "レストラン", "カフェ", "居酒屋", "ホテル", "旅館", "民泊", "宿泊",
+                           "料理", "食事", "弁当", "ケータリング", "パン", "ケーキ", "バー", "食堂", "フード"],
+            "卸売・小売業": ["販売", "小売", "卸売", "EC", "通販", "オンラインショップ", "物販", "商品", "輸入",
+                        "輸出", "貿易", "雑貨", "アパレル", "ファッション", "化粧品", "家電", "食品", "ショップ"],
             "教育・学習支援業": ["教育", "学習", "塾", "スクール", "教室", "研修", "セミナー", "講座", "eラーニング",
-                            "語学", "資格", "キャリア"],
+                            "語学", "資格", "キャリア", "オンライン教育", "家庭教師"],
             "旅行・娯楽事業": ["旅行", "観光", "ツアー", "娯楽", "イベント", "フィットネス", "ジム", "スポーツ",
-                          "エステ", "レジャー", "温泉", "リゾート"],
-            "サービス業（マスコミ・出版・広告）": ["広告", "マーケティング", "出版", "印刷", "デザイン", "PR", 
-                                            "Web制作", "動画制作", "撮影", "編集"],
-            "人材サービス": ["人材", "派遣", "紹介", "求人", "転職", "採用", "キャリア", "アウトソーシング"],
-            "サービス業（理容・美容・洗濯・生活）": ["美容", "理容", "エステ", "ネイル", "クリーニング", "清掃", "家事代行"],
-            "サービス業（芸能）": ["芸能", "タレント", "モデル", "プロダクション", "マネジメント", "音楽", "映画"],
+                          "エステ", "レジャー", "温泉", "リゾート", "アミューズメント"],
+            "サービス業（マスコミ・出版・広告）": ["広告", "マーケティング", "出版", "印刷", "デザイン", "PR",
+                                            "Web制作", "動画制作", "撮影", "編集", "メディア", "映像"],
+            "人材サービス": ["人材", "派遣", "紹介", "求人", "転職", "採用", "キャリア", "アウトソーシング", "HR"],
+            "サービス業（理容・美容・洗濯・生活）": ["美容", "理容", "エステ", "ネイル", "クリーニング", "清掃", "家事代行", "サロン"],
+            "サービス業（芸能）": ["芸能", "タレント", "モデル", "プロダクション", "マネジメント", "音楽", "映画", "アーティスト"],
             "医療・福祉": ["医療", "介護", "福祉", "病院", "クリニック", "訪問看護", "デイサービス", "ヘルパー",
-                       "リハビリ", "薬局", "障がい者支援"],
-            "運輸業・旅客運送業": ["運送", "物流", "配送", "倉庫", "輸送", "引越", "宅配", "通関", "レンタカー"],
-            "金融・保険・投資業": ["金融", "保険", "投資", "ローン", "ファイナンス", "資産運用"],
-            "電気・ガス・熱供給・水道業": ["電気", "ガス", "水道", "エネルギー", "太陽光", "発電", "再生可能エネルギー"],
-            "不動産業": ["不動産", "賃貸", "売買", "仲介", "マンション管理", "ビル管理", "駐車場"],
-            "建設業": ["建設", "建築", "土木", "工事", "リフォーム", "設計", "施工", "内装", "外装"],
-            "産廃業": ["産廃", "廃棄物", "ゴミ", "リサイクル", "処分"],
-            "製造業（金属・機械・プラスチック）": ["製造", "加工", "金属", "機械", "プラスチック", "部品", "金型"],
-            "製造業（衣料品・家具）": ["衣料", "アパレル", "繊維", "家具", "インテリア", "木工"],
-            "コンサルティング": ["コンサルティング", "経営", "戦略", "M&A", "事業承継", "マーケティングリサーチ"]
+                       "リハビリ", "薬局", "障がい者支援", "老人ホーム", "ケア"],
+            "運輸業・旅客運送業": ["運送", "物流", "配送", "倉庫", "輸送", "引越", "宅配", "通関", "レンタカー", "タクシー"],
+            "金融・保険・投資業": ["金融", "保険", "投資", "ローン", "ファイナンス", "資産運用", "証券"],
+            "電気・ガス・熱供給・水道業": ["電気", "ガス", "水道", "エネルギー", "太陽光", "発電", "再生可能エネルギー", "電力"],
+            "不動産業": ["不動産", "賃貸", "売買", "仲介", "マンション管理", "ビル管理", "駐車場", "物件", "土地"],
+            "建設業": ["建設", "建築", "土木", "工事", "リフォーム", "設計", "施工", "内装", "外装", "リノベーション"],
+            "産廃業": ["産廃", "廃棄物", "ゴミ", "リサイクル", "処分", "環境"],
+            "製造業（金属・機械・プラスチック）": ["製造", "加工", "金属", "機械", "プラスチック", "部品", "金型", "工場"],
+            "製造業（衣料品・家具）": ["衣料", "アパレル", "繊維", "家具", "インテリア", "木工", "縫製"],
+            "コンサルティング": ["コンサルティング", "経営", "戦略", "M&A", "事業承継", "マーケティングリサーチ", "コンサル"]
         };
 
         // ============================================
         // Cloudflare Worker API エンドポイント設定
         // ============================================
-        // デプロイ後、以下のURLを実際のWorker URLに変更してください
         const API_ENDPOINT = "https://mokuteki-ai.ikeda-250.workers.dev";
 
-        // Claude APIによる高精度な目的選定
-        async function selectPurposesWithAI(businesses, futures) {
-            let allPurposesText = "";
-            for (const [category, purposes] of Object.entries(purposeDatabase)) {
-                allPurposesText += `\n【${category}】\n`;
+        let dragItem = null;
+        let editingItem = null;
+        let counter = 0;
+
+        // ============================================
+        // 目的データベースをテキスト形式で取得
+        // ============================================
+        function getDatabaseText() {
+            let text = "";
+            for (const [category, purposes] of Object.entries(db)) {
+                text += `\n【${category}】\n`;
                 purposes.forEach((p, i) => {
-                    allPurposesText += `${i + 1}. ${p}\n`;
+                    text += `${i + 1}. ${p}\n`;
                 });
             }
+            return text;
+        }
 
-            let businessInfo = "";
-            businesses.forEach(biz => {
-                businessInfo += `\n事業${biz.number}:\n`;
-                if (biz.customer) businessInfo += `  誰に: ${biz.customer}\n`;
-                if (biz.product) businessInfo += `  何を: ${biz.product}\n`;
-                if (biz.method) businessInfo += `  どのような形で: ${biz.method}\n`;
-            });
+        // ============================================
+        // ハイブリッド目的生成（既存から選択 + 必要なら補完）
+        // ============================================
+        async function selectPurposesWithAI(businesses) {
+            const businessInput = businesses.join('、');
+            const databaseText = getDatabaseText();
 
-            const prompt = `あなたは会社設立の専門家です。以下のビジネス情報から、最適な会社目的を選定してください。
+            const prompt = `あなたは会社設立の専門家です。ユーザーのビジネス内容から、法人登記用の事業目的を生成してください。
 
-【ビジネス情報】${businessInfo}
+【ユーザーのビジネス内容】
+${businessInput}
 
-${futures.length > 0 ? `【3年後の展望】\n${futures.join("、")}` : ""}
+【参考：事業目的の文体サンプル】
+${databaseText}
 
-【利用可能な目的一覧】
-${allPurposesText}
+【指示】
+1. ユーザーのビジネス内容を正確に理解する
+   - 「外国人の医療ツアー」→ 医療観光の手配・コーディネート事業（病院経営ではない）
+   - 「高齢者向けスマホ教室」→ スマホ操作を教える教室事業（IT開発ではない）
+   - 単語ではなく「このユーザーは実際に何をするのか」を考える
 
-【選定ルール】
-1. 基本的には既存の目的一覧から選定してください
-2. ただし、以下の場合は新しい目的を作成してください：
-   - 特殊な商品・サービス（例: 特許取得商品、独自開発システム、オリジナル製品）
-   - 既存の目的では表現しきれない事業内容
-   - 業界特有の専門的な事業
-   - 新しいビジネスモデルや技術
-3. 一般的な事業内容（Web制作、飲食店、不動産など）の場合は、必ず既存リストから選んでください
-4. 入力が少ない場合は3-5個程度、詳細な場合は最大10個まで
-5. 選定した目的は、完全な文言で出力してください
+2. そのビジネスに適した事業目的を生成する
+   - 上記サンプルは文体・形式の参考として使う
+   - ユーザーのビジネス内容を正確に表現した目的を生成する
+   - 入力1つにつき1〜3個程度が目安（関連性が高いもののみ）
+   - 「あったら便利かも」程度のものは含めない
+   - 入力内容から直接導かれるものだけ出力する
+
+【公用文の書き方ルール】
+- 「及び」「並びに」の使い分け：
+  - 同レベルの並列 → 「及び」（A及びB）
+  - 大きなグループの並列 → 「並びに」（A及びB並びにC及びD）
+- 「又は」「若しくは」の使い分け：
+  - 同レベルの選択 → 「又は」（A又はB）
+  - 小さい選択肢 → 「若しくは」（A若しくはB又はC）
 
 【出力形式】
-以下のJSON形式のみで出力してください。他の説明は不要です。
+JSON形式のみ。説明不要。
 {
-  "purposes": [
-    "目的文1",
-    "目的文2",
-    "目的文3"
-  ]
+  "purposes": ["目的文1", "目的文2", ...]
 }`;
 
             try {
@@ -1503,7 +1201,7 @@ ${allPurposesText}
                     },
                     body: JSON.stringify({
                         model: "claude-sonnet-4-20250514",
-                        max_tokens: 2000,
+                        max_tokens: 4000,
                         messages: [
                             { role: "user", content: prompt }
                         ]
@@ -1516,55 +1214,33 @@ ${allPurposesText}
 
                 const data = await response.json();
                 let responseText = data.content[0].text;
-                
+
+                // JSONパース
                 responseText = responseText.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
                 const result = JSON.parse(responseText);
-                
-                return result.purposes.map(purpose => ({
-                    purpose: purpose,
-                    score: 100,
-                    category: findCategoryForPurpose(purpose)
-                }));
+
+                return result.purposes;
 
             } catch (error) {
                 console.error("AI選定エラー:", error);
-                return selectPurposesWithKeywords(businesses, futures);
+                return selectPurposesWithKeywords(businesses);
             }
         }
 
-        // 目的が既存のデータベースのどのカテゴリに属するかを判定
-        function findCategoryForPurpose(purpose) {
-            for (const [category, purposes] of Object.entries(purposeDatabase)) {
-                if (purposes.includes(purpose)) {
-                    return category;
-                }
-            }
-            return "卸売・小売業"; // デフォルトは卸売・小売業
-        }
-
+        // ============================================
         // フォールバック用のキーワードマッチング
-        function selectPurposesWithKeywords(businesses, futures) {
-            let allInput = "";
-            businesses.forEach(biz => {
-                allInput += ` ${biz.customer} ${biz.product} ${biz.method}`;
-            });
-            allInput += ` ${futures.join(" ")}`;
-            allInput = allInput.toLowerCase();
-            
+        // ============================================
+        function selectPurposesWithKeywords(businesses) {
+            const allInput = businesses.join(' ').toLowerCase();
             const purposeScores = [];
 
             if (allInput.trim().length < 3) {
-                // 入力が少ない場合は情報通信業の最初の目的を返す
-                return [{ 
-                    purpose: purposeDatabase["情報通信業"][0], 
-                    score: 0, 
-                    category: "情報通信業" 
-                }];
+                return [db["情報通信業"][0]];
             }
 
-            for (const [category, purposes] of Object.entries(purposeDatabase)) {
+            for (const [category, purposes] of Object.entries(db)) {
                 const categoryKeywords = keywordMapping[category] || [];
-                
+
                 for (const purpose of purposes) {
                     let score = 0;
                     const purposeLower = purpose.toLowerCase();
@@ -1589,130 +1265,226 @@ ${allPurposesText}
             }
 
             purposeScores.sort((a, b) => b.score - a.score);
-            const targetCount = Math.min(purposeScores.length, 7);
-            return purposeScores.slice(0, targetCount);
+            return purposeScores.slice(0, 7).map(item => item.purpose);
         }
 
-        function selectMethod(method) {
-            document.getElementById('methodSelection').style.display = 'none';
-            document.getElementById('simpleInput').style.display = 'block';
+        // ============================================
+        // UI関連の関数
+        // ============================================
+        function addInput() {
+            const list = document.getElementById('inputList');
+            const row = document.createElement('div');
+            row.className = 'input-row';
+            row.innerHTML = `
+                <textarea class="input-field business-input" placeholder="例：コンサルティング業" rows="2"></textarea>
+                <button class="btn-remove" onclick="removeInput(this)">×</button>
+            `;
+            list.appendChild(row);
+            updateRemoveButtons();
         }
 
-        function addSimpleBusinessItem() {
-            addInputItem('simpleBusinessItems', 'simple-business-input', '例: システム開発');
+        function removeInput(btn) {
+            const rows = document.querySelectorAll('.input-row');
+            if (rows.length > 1) {
+                btn.closest('.input-row').remove();
+                updateRemoveButtons();
+            }
         }
 
-        async function generatePurposesSimple() {
-            const businesses = getInputValues('.simple-business-input');
+        function updateRemoveButtons() {
+            const rows = document.querySelectorAll('.input-row');
+            rows.forEach(row => {
+                const btn = row.querySelector('.btn-remove');
+                btn.style.visibility = rows.length === 1 ? 'hidden' : 'visible';
+            });
+        }
 
-            if (businesses.length === 0) {
-                alert('少なくとも1つの業種または事業内容を入力してください。');
+        async function generate() {
+            const inputs = Array.from(document.querySelectorAll('.business-input'))
+                .map(i => i.value.trim())
+                .filter(v => v);
+
+            if (inputs.length === 0) {
+                alert('事業内容を入力してください');
                 return;
             }
 
             document.getElementById('loading').classList.add('show');
             document.getElementById('results').classList.remove('show');
-            document.querySelector('.generate-btn').disabled = true;
+            document.querySelector('.btn-primary').disabled = true;
 
             try {
-                const businessesFormatted = businesses.map((b, i) => ({
-                    number: i + 1,
-                    customer: "",
-                    product: b,
-                    method: ""
-                }));
-                const selectedPurposes = await selectPurposesWithAI(businessesFormatted, []);
-                displayResults(selectedPurposes);
-                document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                const purposes = await selectPurposesWithAI(inputs);
+                displayResults(purposes);
             } catch (error) {
-                console.error('選定エラー:', error);
-                alert('目的の選定中にエラーが発生しました。もう一度お試しください。');
+                console.error('生成エラー:', error);
+                // フォールバック
+                const purposes = selectPurposesWithKeywords(inputs);
+                displayResults(purposes);
             } finally {
                 document.getElementById('loading').classList.remove('show');
-                document.querySelector('.generate-btn').disabled = false;
+                document.querySelector('.btn-primary').disabled = false;
             }
-        }
-
-        function addInputItem(containerId, className, placeholder) {
-            const container = document.getElementById(containerId);
-            const newItem = document.createElement('div');
-            newItem.className = 'input-item';
-            newItem.innerHTML = `
-                <input type="text" placeholder="${placeholder}" class="${className}">
-                <button class="remove-btn" onclick="removeItem(this)">×</button>
-            `;
-            container.appendChild(newItem);
-        }
-
-        function removeItem(button) {
-            const container = button.closest('.input-item').parentElement;
-            const items = container.querySelectorAll('.input-item');
-            
-            if (items.length > 1) {
-                button.closest('.input-item').remove();
-                
-                const remainingItems = container.querySelectorAll('.input-item');
-                if (remainingItems.length === 1) {
-                    remainingItems[0].querySelector('.remove-btn').style.visibility = 'hidden';
-                }
-            }
-        }
-
-        function getInputValues(selector) {
-            const inputs = document.querySelectorAll(selector);
-            return Array.from(inputs)
-                .map(input => input.value.trim())
-                .filter(val => val.length > 0);
         }
 
         function displayResults(purposes) {
-            const purposeList = document.getElementById('purposeList');
-            const resultsCount = document.getElementById('resultsCount');
-            
-            purposeList.innerHTML = '';
-            
-            // アコーディオン用のHTMLキャッシュを作成
-            if (!window.accordionHtmlCache) {
-                window.accordionHtmlCache = '';
-                
-                for (const [category, purposes] of Object.entries(purposeDatabase)) {
-                    if (purposes.length === 0) continue; // 空のカテゴリはスキップ
-                    
-                    window.accordionHtmlCache += `
-                        <div class="select-category collapsed">
-                            <div class="select-category-header" onclick="toggleSelectCategory(this)">
-                                <h5>${category}</h5>
-                                <span class="select-category-toggle">▼</span>
-                            </div>
-                            <div class="select-category-items">`;
-                    
-                    purposes.forEach(purpose => {
-                        window.accordionHtmlCache += `
-                            <div class="select-purpose-option" onclick="handlePurposeSelection(this, '${escapeHtml(purpose).replace(/'/g, "\\'")}')" title="${escapeHtml(purpose)}">
-                                ${purpose}
-                            </div>`;
-                    });
-                    
-                    window.accordionHtmlCache += `
-                            </div>
-                        </div>`;
-                }
-            }
-            
-            // 単純な一覧表示（業種別セクションなし）
-            let globalCounter = 1;
-            purposes.forEach((item) => {
-                createPurposeItem(purposeList, globalCounter++, item.purpose);
+            const list = document.getElementById('purposeList');
+            list.innerHTML = '';
+            purposes.forEach((p, i) => createItem(list, i + 1, p));
+            document.getElementById('count').textContent = `${purposes.length}個の目的`;
+            document.getElementById('results').classList.add('show');
+            counter = purposes.length;
+
+            // 結果部分にスクロール
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function createItem(container, num, text = '') {
+            const item = document.createElement('div');
+            item.className = 'purpose-item';
+            item.draggable = false;
+            item.innerHTML = `
+                <span class="drag-icon">☰</span>
+                <div class="purpose-num">${num}</div>
+                <input type="text" class="purpose-text" value="${escapeHtml(text)}" placeholder="目的を入力" draggable="false">
+                <div class="purpose-actions">
+                    <button class="btn-icon" onclick="openModal(this)" title="一覧から選択">📋</button>
+                    <button class="btn-icon delete" onclick="removeItem(this)" title="削除">×</button>
+                </div>
+            `;
+            container.appendChild(item);
+            setupDrag(item);
+        }
+
+        function setupDrag(item) {
+            const handle = item.querySelector('.drag-icon');
+            const input = item.querySelector('.purpose-text');
+
+            input.addEventListener('mousedown', e => {
+                e.stopPropagation();
+                item.draggable = false;
             });
 
-            resultsCount.textContent = `${purposes.length}個の目的が生成されました。編集・並び替えができます。`;
-            document.getElementById('results').classList.add('show');
+            handle.addEventListener('mousedown', () => item.draggable = true);
+            document.addEventListener('mouseup', () => item.draggable = false);
 
-            window.purposeCounter = purposes.length;
-            
-            setTimeout(() => {
-                updateRemoveButtons();
-            }, 100);
+            item.addEventListener('dragstart', function() {
+                dragItem = this;
+                this.style.opacity = '0.5';
+            });
+
+            item.addEventListener('dragend', function() {
+                this.style.opacity = '1';
+                renumber();
+            });
+
+            item.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                const after = getDragAfter(this.parentElement, e.clientY);
+                if (after == null) {
+                    this.parentElement.appendChild(dragItem);
+                } else {
+                    this.parentElement.insertBefore(dragItem, after);
+                }
+            });
+        }
+
+        function getDragAfter(container, y) {
+            const items = [...container.querySelectorAll('.purpose-item:not(.dragging)')];
+            return items.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = y - box.top - box.height / 2;
+                if (offset < 0 && offset > closest.offset) {
+                    return { offset, element: child };
+                }
+                return closest;
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+        }
+
+        function addPurpose() {
+            counter++;
+            const list = document.getElementById('purposeList');
+            createItem(list, counter);
+            renumber();
+        }
+
+        function removeItem(btn) {
+            const items = document.querySelectorAll('.purpose-item');
+            if (items.length > 1) {
+                btn.closest('.purpose-item').remove();
+                renumber();
+            }
+        }
+
+        function renumber() {
+            const items = document.querySelectorAll('.purpose-item');
+            items.forEach((item, i) => {
+                item.querySelector('.purpose-num').textContent = i + 1;
+            });
+            counter = items.length;
+            document.getElementById('count').textContent = `${items.length}個の目的`;
+        }
+
+        function openModal(btn) {
+            editingItem = btn.closest('.purpose-item');
+            const body = document.getElementById('modalBody');
+            body.innerHTML = '';
+
+            for (const [cat, items] of Object.entries(db)) {
+                const div = document.createElement('div');
+                div.className = 'category collapsed';
+                div.innerHTML = `
+                    <div class="category-header" onclick="toggleCategory(this)">
+                        <div class="category-name">${cat}</div>
+                        <div class="category-icon">▼</div>
+                    </div>
+                    <div class="category-list">
+                        ${items.map(i => `<div class="category-item" onclick="selectItem('${escapeHtml(i).replace(/'/g, "\\'")}')">${i}</div>`).join('')}
+                    </div>
+                `;
+                body.appendChild(div);
+            }
+
+            document.getElementById('modal').classList.add('show');
+        }
+
+        function toggleCategory(header) {
+            header.closest('.category').classList.toggle('collapsed');
+        }
+
+        function selectItem(text) {
+            if (editingItem) {
+                editingItem.querySelector('.purpose-text').value = text;
+            }
+            closeModal();
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('show');
+            editingItem = null;
+        }
+
+        function copyAll() {
+            const items = document.querySelectorAll('.purpose-item');
+            const purposes = Array.from(items)
+                .map((item, i) => {
+                    const text = item.querySelector('.purpose-text').value.trim();
+                    return text ? `${i + 1}. ${text}` : null;
+                })
+                .filter(Boolean)
+                .join('\n');
+
+            if (purposes) {
+                navigator.clipboard.writeText(purposes).then(() => {
+                    showToast();
+                });
+            }
+        }
+
+        function showToast() {
+            const toast = document.getElementById('toast');
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
         }
 
         function escapeHtml(text) {
@@ -1721,257 +1493,12 @@ ${allPurposesText}
             return div.innerHTML;
         }
 
-        function createPurposeItem(container, number, selectedPurpose = '') {
-            const div = document.createElement('div');
-            div.className = 'purpose-item';
-            div.dataset.number = number;
-            // draggableをfalseに設定（ハンドルでのみドラッグ可能にする）
-            div.draggable = false;
-            
-            div.innerHTML = `
-                <div class="purpose-item-header">
-                    <span class="drag-handle" title="ドラッグして並び替え">☰</span>
-                    <span class="purpose-number">${number}</span>
-                    <textarea class="purpose-input-main" draggable="false" placeholder="目的を入力してください" rows="1" oninput="autoResize(this)">${escapeHtml(selectedPurpose)}</textarea>
-                    <div class="purpose-controls">
-                        <button class="move-btn" onclick="moveUp(this)" title="上へ移動">↑</button>
-                        <button class="move-btn" onclick="moveDown(this)" title="下へ移動">↓</button>
-                        <button class="toggle-select-btn" onclick="toggleSelect(this)" title="一覧から選択">📋 一覧</button>
-                        <button class="remove-purpose-btn" onclick="removePurpose(this)">×</button>
-                    </div>
-                </div>
-                <div class="purpose-select-container">
-                    ${window.accordionHtmlCache}
-                </div>
-            `;
-            
-            container.appendChild(div);
-            setupDragAndDrop(div);
-
-            // 初期表示時に高さを自動調整
-            const textarea = div.querySelector('.purpose-input-main');
-            setTimeout(() => autoResize(textarea), 0);
-        }
-
-        function setupDragAndDrop(item) {
-            const handle = item.querySelector('.drag-handle');
-            const input = item.querySelector('.purpose-input-main');
-            const buttons = item.querySelectorAll('button');
-            
-            // 入力欄とボタン上ではドラッグを無効化
-            input.addEventListener('mousedown', function(e) {
-                e.stopPropagation();
-                item.draggable = false;
-            });
-            
-            buttons.forEach(button => {
-                button.addEventListener('mousedown', function(e) {
-                    e.stopPropagation();
-                    item.draggable = false;
-                });
-            });
-            
-            // ハンドルでマウスダウンした時のみdraggableをtrueに
-            handle.addEventListener('mousedown', function(e) {
-                item.draggable = true;
-            });
-            
-            // マウスアップ時はdraggableをfalseに戻す
-            document.addEventListener('mouseup', function() {
-                item.draggable = false;
-            });
-            
-            item.addEventListener('dragstart', handleDragStart);
-            item.addEventListener('dragend', handleDragEnd);
-            item.addEventListener('dragover', handleDragOver);
-            item.addEventListener('drop', handleDrop);
-            item.addEventListener('dragleave', handleDragLeave);
-        }
-
-        let draggedItem = null;
-
-        function handleDragStart(e) {
-            draggedItem = this;
-            this.classList.add('dragging');
-            e.dataTransfer.effectAllowed = 'move';
-            e.dataTransfer.setData('text/html', this.innerHTML);
-        }
-
-        function handleDragEnd(e) {
-            this.classList.remove('dragging');
-            document.querySelectorAll('.purpose-item').forEach(item => {
-                item.classList.remove('drag-over');
-            });
-        }
-
-        function handleDragOver(e) {
-            if (e.preventDefault) {
-                e.preventDefault();
+        // モーダル外クリックで閉じる
+        document.getElementById('modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
             }
-            
-            e.dataTransfer.dropEffect = 'move';
-            
-            if (this !== draggedItem) {
-                this.classList.add('drag-over');
-            }
-            
-            return false;
-        }
-
-        function handleDragLeave(e) {
-            this.classList.remove('drag-over');
-        }
-
-        function handleDrop(e) {
-            if (e.stopPropagation) {
-                e.stopPropagation();
-            }
-            
-            if (draggedItem !== this) {
-                const allItems = Array.from(document.querySelectorAll('.purpose-item'));
-                const draggedIndex = allItems.indexOf(draggedItem);
-                const targetIndex = allItems.indexOf(this);
-                
-                if (draggedIndex < targetIndex) {
-                    this.parentNode.insertBefore(draggedItem, this.nextSibling);
-                } else {
-                    this.parentNode.insertBefore(draggedItem, this);
-                }
-                
-                renumberPurposes();
-            }
-            
-            this.classList.remove('drag-over');
-            return false;
-        }
-
-        function toggleSelect(button) {
-            const purposeItem = button.closest('.purpose-item');
-            const selectContainer = purposeItem.querySelector('.purpose-select-container');
-            
-            if (selectContainer.classList.contains('show')) {
-                selectContainer.classList.remove('show');
-                button.textContent = '📋 一覧';
-            } else {
-                selectContainer.classList.add('show');
-                button.textContent = '📋 閉じる';
-            }
-        }
-
-        function toggleSelectCategory(header) {
-            const category = header.closest('.select-category');
-            category.classList.toggle('collapsed');
-        }
-
-        function handlePurposeSelection(element, purposeText) {
-            const purposeItem = element.closest('.purpose-item');
-            const mainInput = purposeItem.querySelector('.purpose-input-main');
-            const selectContainer = purposeItem.querySelector('.purpose-select-container');
-            const toggleBtn = purposeItem.querySelector('.toggle-select-btn');
-
-            mainInput.value = purposeText;
-            autoResize(mainInput);
-            selectContainer.classList.remove('show');
-            toggleBtn.textContent = '📋 一覧';
-        }
-
-        function addNewPurpose() {
-            window.purposeCounter = window.purposeCounter || document.querySelectorAll('.purpose-item').length;
-            window.purposeCounter++;
-            
-            const purposeList = document.getElementById('purposeList');
-            createPurposeItem(purposeList, window.purposeCounter);
-            renumberPurposes();
-            updateRemoveButtons();
-        }
-
-        function removePurpose(button) {
-            const purposeItem = button.closest('.purpose-item');
-            const items = document.querySelectorAll('.purpose-item');
-            
-            if (items.length > 1) {
-                purposeItem.remove();
-                renumberPurposes();
-                updateRemoveButtons();
-            }
-        }
-
-        function renumberPurposes() {
-            const items = document.querySelectorAll('.purpose-item');
-            items.forEach((item, index) => {
-                const number = index + 1;
-                item.dataset.number = number;
-                item.querySelector('.purpose-number').textContent = number;
-            });
-            window.purposeCounter = items.length;
-        }
-
-        function moveUp(button) {
-            const purposeItem = button.closest('.purpose-item');
-            const previousItem = purposeItem.previousElementSibling;
-
-            if (previousItem && previousItem.classList.contains('purpose-item')) {
-                purposeItem.parentNode.insertBefore(purposeItem, previousItem);
-                renumberPurposes();
-            }
-        }
-
-        function moveDown(button) {
-            const purposeItem = button.closest('.purpose-item');
-            const nextItem = purposeItem.nextElementSibling;
-
-            if (nextItem && nextItem.classList.contains('purpose-item')) {
-                purposeItem.parentNode.insertBefore(nextItem, purposeItem);
-                renumberPurposes();
-            }
-        }
-
-        function updateRemoveButtons() {
-            const items = document.querySelectorAll('.purpose-item');
-            const removeButtons = document.querySelectorAll('.remove-purpose-btn');
-
-            removeButtons.forEach((btn) => {
-                btn.style.visibility = items.length === 1 ? 'hidden' : 'visible';
-            });
-        }
-
-        function autoResize(textarea) {
-            textarea.style.height = 'auto';
-            textarea.style.height = textarea.scrollHeight + 'px';
-        }
-
-        function copyAllPurposes() {
-            const items = document.querySelectorAll('.purpose-item');
-            const purposes = [];
-            
-            items.forEach((item, index) => {
-                const mainInput = item.querySelector('.purpose-input-main');
-                const purposeText = mainInput.value.trim();
-                
-                if (purposeText) {
-                    purposes.push(`${index + 1}. ${purposeText}`);
-                }
-            });
-
-            if (purposes.length === 0) {
-                alert('コピーする目的がありません。');
-                return;
-            }
-
-            const text = purposes.join('\n');
-            navigator.clipboard.writeText(text).then(() => {
-                showCopyNotification();
-            });
-        }
-
-        function showCopyNotification() {
-            const notification = document.getElementById('copyNotification');
-            notification.classList.add('show');
-            
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 2000);
-        }
+        });
     </script>
 </body>
 </html>
