@@ -789,53 +789,64 @@
                 padding: 12px;
             }
 
-            /* 目的アイテムをコンパクトに */
+            /* 目的アイテム - 2段レイアウト */
             .purpose-item {
-                padding: 12px;
-                gap: 8px;
-                flex-wrap: nowrap;
-                align-items: flex-start;
+                padding: 16px;
+                gap: 0;
+                flex-wrap: wrap;
+                align-items: stretch;
             }
 
             .drag-icon {
                 display: none;
             }
 
+            /* 上段：番号 + テキスト */
+            .purpose-num {
+                width: 32px;
+                height: 32px;
+                font-size: 13px;
+                flex-shrink: 0;
+                margin-right: 12px;
+                margin-bottom: 12px;
+            }
+
+            .purpose-text {
+                flex: 1;
+                font-size: 14px;
+                padding: 0;
+                min-width: calc(100% - 44px);
+                margin-bottom: 12px;
+                background: transparent;
+                line-height: 1.6;
+            }
+
+            /* 下段：移動ボタン + アクションボタン */
             .move-buttons {
                 display: flex;
+                flex-direction: row;
+                gap: 8px;
                 flex-shrink: 0;
             }
 
             .btn-move {
-                width: 24px;
-                height: 20px;
-                font-size: 9px;
-            }
-
-            .purpose-num {
-                width: 28px;
-                height: 28px;
-                font-size: 12px;
-                flex-shrink: 0;
-            }
-
-            /* テキストが全部見えるように */
-            .purpose-text {
-                flex: 1;
-                font-size: 13px;
-                padding: 8px 10px;
-                min-width: 0;
+                width: 36px;
+                height: 32px;
+                font-size: 11px;
+                border-radius: 6px;
             }
 
             .purpose-actions {
                 flex-shrink: 0;
-                gap: 4px;
+                gap: 8px;
+                margin-left: auto;
             }
 
             .btn-icon {
-                width: 32px;
+                width: 36px;
                 height: 32px;
-                font-size: 14px;
+                font-size: 15px;
+                border-radius: 6px;
             }
 
             .btn-add-purpose {
