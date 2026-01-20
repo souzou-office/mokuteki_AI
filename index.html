@@ -68,89 +68,115 @@
             line-height: 1.6;
         }
 
-        /* モード切り替え */
-        .mode-toggle {
-            display: flex;
-            background: #f0f0f5;
-            border-radius: 10px;
-            padding: 4px;
-            margin-bottom: 28px;
+        /* 深掘り質問セクション */
+        .question-group {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #e2e8f0;
         }
 
-        .mode-btn {
-            flex: 1;
-            padding: 12px 16px;
-            border: none;
-            background: transparent;
+        .question-group-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a202c;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .question-item {
+            margin-bottom: 16px;
+        }
+
+        .question-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .question-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #4a5568;
+            margin-bottom: 10px;
+        }
+
+        .question-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .option-btn {
+            padding: 10px 16px;
+            border: 2px solid #e2e8f0;
+            background: white;
             border-radius: 8px;
             font-size: 14px;
-            font-weight: 600;
-            color: #718096;
+            color: #4a5568;
             cursor: pointer;
             transition: all 0.2s;
         }
 
-        .mode-btn.active {
-            background: white;
+        .option-btn:hover {
+            border-color: #667eea;
             color: #667eea;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
         }
 
-        .mode-btn:hover:not(.active) {
-            color: #4a5568;
+        .option-btn.selected {
+            border-color: #667eea;
+            background: #667eea;
+            color: white;
         }
 
-        /* モード別コンテナ */
-        .mode-container {
-            display: none;
-        }
-
-        .mode-container.active {
-            display: block;
-        }
-
-        /* 詳細モード用スタイル */
-        .detailed-input-group {
-            background: #f8fafc;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 16px;
-            border: 1px solid #e2e8f0;
-        }
-
-        .detailed-input-group .group-header {
+        .option-other {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-bottom: 16px;
+            gap: 8px;
         }
 
-        .detailed-input-group .group-title {
+        .option-other input {
+            padding: 10px 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
             font-size: 14px;
+            width: 150px;
+            transition: all 0.2s;
+        }
+
+        .option-other input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .questions-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .btn-secondary {
+            flex: 1;
+            padding: 16px;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            color: #718096;
+            font-size: 16px;
             font-weight: 600;
-            color: #4a5568;
+            cursor: pointer;
+            transition: all 0.2s;
         }
 
-        .detailed-field {
-            margin-bottom: 14px;
-        }
-
-        .detailed-field:last-child {
-            margin-bottom: 0;
-        }
-
-        .detailed-label {
-            display: block;
-            font-size: 13px;
-            font-weight: 500;
+        .btn-secondary:hover {
+            border-color: #667eea;
             color: #667eea;
-            margin-bottom: 6px;
         }
 
-        .detailed-label .hint {
-            font-weight: 400;
-            color: #a0aec0;
-            margin-left: 8px;
+        .questions-actions .btn-primary {
+            flex: 2;
+            margin-top: 0;
         }
 
         /* 入力フィールド */
@@ -719,59 +745,40 @@
         <div class="card" id="inputCard">
             <h1 class="card-title">事業内容を入力</h1>
             <p class="card-subtitle">
-                業種や事業内容を入力してください。重要なものから順番に、3年以内に予定している事業も含めて記入してください。
+                どんな事業をするか入力してください。複数ある場合は「+ 事業を追加」で追加できます。
             </p>
 
-            <!-- モード切り替え -->
-            <div class="mode-toggle">
-                <button class="mode-btn active" onclick="switchMode('simple')">シンプル</button>
-                <button class="mode-btn" onclick="switchMode('detailed')">詳細（精度UP）</button>
-            </div>
-
-            <!-- シンプルモード -->
-            <div class="mode-container active" id="simpleMode">
-                <div class="input-group" id="inputList">
-                    <div class="input-row">
-                        <textarea class="input-field business-input" placeholder="例：Webサイト制作、飲食店経営、不動産仲介" rows="2"></textarea>
-                        <button class="btn-remove" onclick="removeInput(this)" style="visibility: hidden;">×</button>
-                    </div>
+            <div class="input-group" id="inputList">
+                <div class="input-row">
+                    <textarea class="input-field business-input" placeholder="例：リフォーム、飲食店、不動産仲介" rows="2"></textarea>
+                    <button class="btn-remove" onclick="removeInput(this)" style="visibility: hidden;">×</button>
                 </div>
-                <button class="btn-add" onclick="addInput()">+ 事業を追加</button>
             </div>
+            <button class="btn-add" onclick="addInput()">+ 事業を追加</button>
 
-            <!-- 詳細モード -->
-            <div class="mode-container" id="detailedMode">
-                <div id="detailedInputList">
-                    <div class="detailed-input-group">
-                        <div class="group-header">
-                            <span class="group-title">事業 1</span>
-                            <button class="btn-remove" onclick="removeDetailedInput(this)" style="visibility: hidden;">×</button>
-                        </div>
-                        <div class="detailed-field">
-                            <label class="detailed-label">誰に<span class="hint">ターゲット顧客</span></label>
-                            <input type="text" class="input-field detailed-who" placeholder="例：中小企業、高齢者、外国人観光客">
-                        </div>
-                        <div class="detailed-field">
-                            <label class="detailed-label">何を<span class="hint">提供する商品・サービス</span></label>
-                            <input type="text" class="input-field detailed-what" placeholder="例：Webサイト、スマホ操作指導、医療通訳">
-                        </div>
-                        <div class="detailed-field">
-                            <label class="detailed-label">どのように<span class="hint">提供方法・形態</span></label>
-                            <input type="text" class="input-field detailed-how" placeholder="例：オンラインで制作、対面で教室形式、病院に同行">
-                        </div>
-                    </div>
-                </div>
-                <button class="btn-add" onclick="addDetailedInput()">+ 事業を追加</button>
-            </div>
-
-            <button class="btn-primary" onclick="generate()">
-                目的を自動生成
+            <button class="btn-primary" onclick="goToQuestions()">
+                次へ
             </button>
+        </div>
+
+        <!-- 深掘り質問セクション -->
+        <div class="card" id="questionsCard" style="display: none;">
+            <h1 class="card-title">もう少し教えてください</h1>
+            <p class="card-subtitle">
+                より正確な事業目的を生成するための質問です。
+            </p>
+
+            <div id="questionsContainer"></div>
+
+            <div class="questions-actions">
+                <button class="btn-secondary" onclick="backToInput()">← 戻る</button>
+                <button class="btn-primary" onclick="generateFromQuestions()">目的を生成</button>
+            </div>
         </div>
 
         <div class="loading" id="loading">
             <div class="spinner"></div>
-            <p class="loading-text">AIが事業目的を生成しています...</p>
+            <p class="loading-text" id="loadingText">AIが質問を生成しています...</p>
         </div>
 
         <div class="results" id="results">
@@ -1254,136 +1261,227 @@
         let dragItem = null;
         let editingItem = null;
         let counter = 0;
-        let currentMode = 'simple'; // 'simple' or 'detailed'
+        let currentBusinessInputs = []; // 入力された事業内容を保持
+        let currentQuestions = null; // 生成された質問を保持
 
         // ============================================
-        // モード切り替え
+        // 深掘り質問フロー
         // ============================================
-        function switchMode(mode) {
-            currentMode = mode;
+        async function goToQuestions() {
+            const inputs = Array.from(document.querySelectorAll('.business-input'))
+                .map(i => i.value.trim())
+                .filter(v => v);
 
-            // ボタンのアクティブ状態を切り替え
-            document.querySelectorAll('.mode-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
+            if (inputs.length === 0) {
+                alert('事業内容を入力してください');
+                return;
+            }
 
-            // コンテナの表示切り替え
-            document.getElementById('simpleMode').classList.remove('active');
-            document.getElementById('detailedMode').classList.remove('active');
-            document.getElementById(mode + 'Mode').classList.add('active');
-        }
+            currentBusinessInputs = inputs;
 
-        // ============================================
-        // 詳細モード用の関数
-        // ============================================
-        function addDetailedInput() {
-            const list = document.getElementById('detailedInputList');
-            const groups = list.querySelectorAll('.detailed-input-group');
-            const num = groups.length + 1;
+            // ローディング表示
+            document.getElementById('inputCard').style.display = 'none';
+            document.getElementById('loading').classList.add('show');
+            document.getElementById('loadingText').textContent = 'AIが質問を生成しています...';
 
-            const group = document.createElement('div');
-            group.className = 'detailed-input-group';
-            group.innerHTML = `
-                <div class="group-header">
-                    <span class="group-title">事業 ${num}</span>
-                    <button class="btn-remove" onclick="removeDetailedInput(this)">×</button>
-                </div>
-                <div class="detailed-field">
-                    <label class="detailed-label">誰に<span class="hint">ターゲット顧客</span></label>
-                    <input type="text" class="input-field detailed-who" placeholder="例：中小企業、高齢者、外国人観光客">
-                </div>
-                <div class="detailed-field">
-                    <label class="detailed-label">何を<span class="hint">提供する商品・サービス</span></label>
-                    <input type="text" class="input-field detailed-what" placeholder="例：Webサイト、スマホ操作指導、医療通訳">
-                </div>
-                <div class="detailed-field">
-                    <label class="detailed-label">どのように<span class="hint">提供方法・形態</span></label>
-                    <input type="text" class="input-field detailed-how" placeholder="例：オンラインで制作、対面で教室形式、病院に同行">
-                </div>
-            `;
-            list.appendChild(group);
-            updateDetailedRemoveButtons();
-        }
+            try {
+                const questions = await generateQuestionsWithAI(inputs);
+                currentQuestions = questions;
+                renderQuestions(questions);
 
-        function removeDetailedInput(btn) {
-            const groups = document.querySelectorAll('.detailed-input-group');
-            if (groups.length > 1) {
-                btn.closest('.detailed-input-group').remove();
-                // 番号を振り直す
-                document.querySelectorAll('.detailed-input-group').forEach((g, i) => {
-                    g.querySelector('.group-title').textContent = `事業 ${i + 1}`;
-                });
-                updateDetailedRemoveButtons();
+                document.getElementById('loading').classList.remove('show');
+                document.getElementById('questionsCard').style.display = 'block';
+                document.getElementById('questionsCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } catch (error) {
+                console.error('質問生成エラー:', error);
+                document.getElementById('loading').classList.remove('show');
+                document.getElementById('inputCard').style.display = 'block';
+                alert('質問の生成に失敗しました。もう一度お試しください。');
             }
         }
 
-        function updateDetailedRemoveButtons() {
-            const groups = document.querySelectorAll('.detailed-input-group');
-            groups.forEach(group => {
-                const btn = group.querySelector('.btn-remove');
-                btn.style.visibility = groups.length === 1 ? 'hidden' : 'visible';
-            });
+        async function generateQuestionsWithAI(businesses) {
+            const businessInput = businesses.join('、');
+
+            const prompt = `あなたは会社設立の専門家です。ユーザーが入力した事業内容について、より正確な法人登記用の事業目的を生成するために、追加で確認すべき質問を生成してください。
+
+【ユーザーの入力】
+${businessInput}
+
+【指示】
+- 各事業について、1〜2個の重要な確認事項を質問として生成
+- 各質問には3〜4個の選択肢を用意（最後は必ず「その他」）
+- 業種によって適切な質問を考える
+  - 例：建設業なら「対象は住宅？店舗？」「施工のみ？設計から？」
+  - 例：飲食店なら「業態は？（カフェ、居酒屋、レストラン）」
+  - 例：ITなら「開発？コンサル？運用保守？」
+- 質問が不要なほど明確な場合は、質問を少なくしてOK
+
+【出力形式】
+JSON形式のみ。説明不要。
+{
+  "businesses": [
+    {
+      "name": "入力された事業名",
+      "questions": [
+        {
+          "question": "質問文",
+          "options": ["選択肢1", "選択肢2", "選択肢3", "その他"]
         }
+      ]
+    }
+  ]
+}`;
 
-        function getDetailedInputs() {
-            const groups = document.querySelectorAll('.detailed-input-group');
-            const inputs = [];
-
-            groups.forEach(group => {
-                const who = group.querySelector('.detailed-who').value.trim();
-                const what = group.querySelector('.detailed-what').value.trim();
-                const how = group.querySelector('.detailed-how').value.trim();
-
-                if (who || what || how) {
-                    inputs.push({ who, what, how });
-                }
+            const response = await fetch(API_ENDPOINT, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    model: "claude-sonnet-4-20250514",
+                    max_tokens: 2000,
+                    messages: [
+                        { role: "user", content: prompt }
+                    ]
+                })
             });
 
-            return inputs;
-        }
-
-        // ============================================
-        // 目的データベースをテキスト形式で取得
-        // ============================================
-        function getDatabaseText() {
-            let text = "";
-            for (const [category, purposes] of Object.entries(db)) {
-                text += `\n【${category}】\n`;
-                purposes.forEach((p, i) => {
-                    text += `${i + 1}. ${p}\n`;
-                });
+            if (!response.ok) {
+                throw new Error(`API Error: ${response.status}`);
             }
-            return text;
+
+            const data = await response.json();
+            let responseText = data.content[0].text;
+
+            // JSONパース
+            responseText = responseText.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
+            return JSON.parse(responseText);
         }
 
-        // ============================================
-        // ハイブリッド目的生成（既存から選択 + 必要なら補完）
-        // ============================================
-        async function selectPurposesWithAI(businesses) {
+        function renderQuestions(data) {
+            const container = document.getElementById('questionsContainer');
+            container.innerHTML = '';
+
+            data.businesses.forEach((business, bizIndex) => {
+                const group = document.createElement('div');
+                group.className = 'question-group';
+                group.dataset.businessIndex = bizIndex;
+
+                let html = `<div class="question-group-title">「${escapeHtml(business.name)}」について</div>`;
+
+                business.questions.forEach((q, qIndex) => {
+                    html += `
+                        <div class="question-item" data-question-index="${qIndex}">
+                            <label class="question-label">${escapeHtml(q.question)}</label>
+                            <div class="question-options">
+                    `;
+
+                    q.options.forEach((option, optIndex) => {
+                        if (option === 'その他') {
+                            html += `
+                                <div class="option-other">
+                                    <button class="option-btn" onclick="selectOption(this, ${bizIndex}, ${qIndex}, '')" data-is-other="true">その他:</button>
+                                    <input type="text" placeholder="入力" onchange="updateOtherValue(this, ${bizIndex}, ${qIndex})">
+                                </div>
+                            `;
+                        } else {
+                            html += `<button class="option-btn" onclick="selectOption(this, ${bizIndex}, ${qIndex}, '${escapeHtml(option)}')">${escapeHtml(option)}</button>`;
+                        }
+                    });
+
+                    html += `</div></div>`;
+                });
+
+                group.innerHTML = html;
+                container.appendChild(group);
+            });
+        }
+
+        function selectOption(btn, bizIndex, qIndex, value) {
+            // 同じ質問の他の選択肢の選択を解除
+            const questionItem = btn.closest('.question-item');
+            questionItem.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+
+            // この選択肢を選択
+            btn.classList.add('selected');
+
+            // 値を保存
+            if (!currentQuestions.businesses[bizIndex].questions[qIndex].answer) {
+                currentQuestions.businesses[bizIndex].questions[qIndex].answer = '';
+            }
+
+            if (btn.dataset.isOther) {
+                // その他の場合は入力値を使用
+                const input = btn.nextElementSibling;
+                currentQuestions.businesses[bizIndex].questions[qIndex].answer = input.value || 'その他';
+            } else {
+                currentQuestions.businesses[bizIndex].questions[qIndex].answer = value;
+            }
+        }
+
+        function updateOtherValue(input, bizIndex, qIndex) {
+            const btn = input.previousElementSibling;
+            if (btn.classList.contains('selected')) {
+                currentQuestions.businesses[bizIndex].questions[qIndex].answer = input.value || 'その他';
+            }
+        }
+
+        function backToInput() {
+            document.getElementById('questionsCard').style.display = 'none';
+            document.getElementById('inputCard').style.display = 'block';
+        }
+
+        async function generateFromQuestions() {
+            // 回答を収集
+            const answersText = currentQuestions.businesses.map(biz => {
+                let text = `【${biz.name}】\n`;
+                biz.questions.forEach(q => {
+                    const answer = q.answer || '（未回答）';
+                    text += `- ${q.question} → ${answer}\n`;
+                });
+                return text;
+            }).join('\n');
+
+            // ローディング表示
+            document.getElementById('questionsCard').style.display = 'none';
+            document.getElementById('loading').classList.add('show');
+            document.getElementById('loadingText').textContent = 'AIが事業目的を生成しています...';
+
+            try {
+                const purposes = await generatePurposesWithAnswers(currentBusinessInputs, answersText);
+                displayResults(purposes);
+            } catch (error) {
+                console.error('生成エラー:', error);
+                const purposes = selectPurposesWithKeywords(currentBusinessInputs);
+                displayResults(purposes);
+            } finally {
+                document.getElementById('loading').classList.remove('show');
+            }
+        }
+
+        async function generatePurposesWithAnswers(businesses, answersText) {
             const businessInput = businesses.join('、');
             const databaseText = getDatabaseText();
 
-            const prompt = `あなたは会社設立の専門家です。ユーザーのビジネス内容から、法人登記用の事業目的を生成してください。
+            const prompt = `あなたは会社設立の専門家です。ユーザーのビジネス内容と追加情報から、法人登記用の事業目的を生成してください。
 
 【ユーザーのビジネス内容】
 ${businessInput}
+
+【追加で確認した情報】
+${answersText}
 
 【参考：事業目的の文体サンプル】
 ${databaseText}
 
 【指示】
-1. ユーザーのビジネス内容を正確に理解する
-   - 「外国人の医療ツアー」→ 医療観光の手配・コーディネート事業（病院経営ではない）
-   - 「高齢者向けスマホ教室」→ スマホ操作を教える教室事業（IT開発ではない）
-   - 単語ではなく「このユーザーは実際に何をするのか」を考える
-
+1. ユーザーのビジネス内容と追加情報を正確に理解する
 2. そのビジネスに適した事業目的を生成する
    - 上記サンプルは文体・形式の参考として使う
    - ユーザーのビジネス内容を正確に表現した目的を生成する
    - 入力1つにつき1〜3個程度が目安（関連性が高いもののみ）
    - 「あったら便利かも」程度のものは含めない
-   - 入力内容から直接導かれるものだけ出力する
 
 【公用文の書き方ルール】
 - 「及び」「並びに」の使い分け：
@@ -1399,38 +1497,45 @@ JSON形式のみ。説明不要。
   "purposes": ["目的文1", "目的文2", ...]
 }`;
 
-            try {
-                const response = await fetch(API_ENDPOINT, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        model: "claude-sonnet-4-20250514",
-                        max_tokens: 4000,
-                        messages: [
-                            { role: "user", content: prompt }
-                        ]
-                    })
-                });
+            const response = await fetch(API_ENDPOINT, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    model: "claude-sonnet-4-20250514",
+                    max_tokens: 4000,
+                    messages: [
+                        { role: "user", content: prompt }
+                    ]
+                })
+            });
 
-                if (!response.ok) {
-                    throw new Error(`API Error: ${response.status}`);
-                }
-
-                const data = await response.json();
-                let responseText = data.content[0].text;
-
-                // JSONパース
-                responseText = responseText.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
-                const result = JSON.parse(responseText);
-
-                return result.purposes;
-
-            } catch (error) {
-                console.error("AI選定エラー:", error);
-                return selectPurposesWithKeywords(businesses);
+            if (!response.ok) {
+                throw new Error(`API Error: ${response.status}`);
             }
+
+            const data = await response.json();
+            let responseText = data.content[0].text;
+
+            responseText = responseText.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
+            const result = JSON.parse(responseText);
+
+            return result.purposes;
+        }
+
+        // ============================================
+        // 目的データベースをテキスト形式で取得
+        // ============================================
+        function getDatabaseText() {
+            let text = "";
+            for (const [category, purposes] of Object.entries(db)) {
+                text += `\n【${category}】\n`;
+                purposes.forEach((p, i) => {
+                    text += `${i + 1}. ${p}\n`;
+                });
+            }
+            return text;
         }
 
         // ============================================
@@ -1475,95 +1580,6 @@ JSON形式のみ。説明不要。
         }
 
         // ============================================
-        // 詳細モード用のAI生成
-        // ============================================
-        async function selectPurposesWithAIDetailed(detailedInputs) {
-            const databaseText = getDatabaseText();
-
-            // 詳細入力をフォーマット
-            let businessDescription = '';
-            detailedInputs.forEach((input, i) => {
-                businessDescription += `【事業${i + 1}】\n`;
-                if (input.who) businessDescription += `- ターゲット顧客: ${input.who}\n`;
-                if (input.what) businessDescription += `- 提供する商品・サービス: ${input.what}\n`;
-                if (input.how) businessDescription += `- 提供方法・形態: ${input.how}\n`;
-                businessDescription += '\n';
-            });
-
-            const prompt = `あなたは会社設立の専門家です。ユーザーのビジネス内容から、法人登記用の事業目的を生成してください。
-
-【ユーザーのビジネス内容】
-${businessDescription}
-
-【参考：事業目的の文体サンプル】
-${databaseText}
-
-【指示】
-1. ユーザーのビジネス内容を正確に理解する
-   - 「誰に」「何を」「どのように」の3要素から、実際の事業内容を把握する
-   - 例: ターゲット「高齢者」+ サービス「スマホ操作」+ 方法「対面教室」
-     → 「高齢者を対象としたスマートフォン操作教室の運営」であり、IT開発ではない
-   - 例: ターゲット「外国人観光客」+ サービス「医療通訳」+ 方法「病院同行」
-     → 「医療通訳及び外国人患者向けコーディネート業務」であり、病院経営ではない
-
-2. そのビジネスに適した事業目的を生成する
-   - 上記サンプルは文体・形式の参考として使う
-   - ユーザーのビジネス内容を正確に表現した目的を生成する
-   - 事業1つにつき1〜3個程度が目安（関連性が高いもののみ）
-   - 「あったら便利かも」程度のものは含めない
-   - 入力内容から直接導かれるものだけ出力する
-
-【公用文の書き方ルール】
-- 「及び」「並びに」の使い分け：
-  - 同レベルの並列 → 「及び」（A及びB）
-  - 大きなグループの並列 → 「並びに」（A及びB並びにC及びD）
-- 「又は」「若しくは」の使い分け：
-  - 同レベルの選択 → 「又は」（A又はB）
-  - 小さい選択肢 → 「若しくは」（A若しくはB又はC）
-
-【出力形式】
-JSON形式のみ。説明不要。
-{
-  "purposes": ["目的文1", "目的文2", ...]
-}`;
-
-            try {
-                const response = await fetch(API_ENDPOINT, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        model: "claude-sonnet-4-20250514",
-                        max_tokens: 4000,
-                        messages: [
-                            { role: "user", content: prompt }
-                        ]
-                    })
-                });
-
-                if (!response.ok) {
-                    throw new Error(`API Error: ${response.status}`);
-                }
-
-                const data = await response.json();
-                let responseText = data.content[0].text;
-
-                // JSONパース
-                responseText = responseText.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
-                const result = JSON.parse(responseText);
-
-                return result.purposes;
-
-            } catch (error) {
-                console.error("AI選定エラー:", error);
-                // フォールバック: 詳細入力を結合してキーワードマッチング
-                const combined = detailedInputs.map(i => `${i.who} ${i.what} ${i.how}`);
-                return selectPurposesWithKeywords(combined);
-            }
-        }
-
-        // ============================================
         // UI関連の関数
         // ============================================
         function addInput() {
@@ -1592,57 +1608,6 @@ JSON形式のみ。説明不要。
                 const btn = row.querySelector('.btn-remove');
                 btn.style.visibility = rows.length === 1 ? 'hidden' : 'visible';
             });
-        }
-
-        async function generate() {
-            let purposes;
-
-            if (currentMode === 'simple') {
-                // シンプルモード
-                const inputs = Array.from(document.querySelectorAll('.business-input'))
-                    .map(i => i.value.trim())
-                    .filter(v => v);
-
-                if (inputs.length === 0) {
-                    alert('事業内容を入力してください');
-                    return;
-                }
-
-                document.getElementById('loading').classList.add('show');
-                document.getElementById('results').classList.remove('show');
-                document.querySelector('.btn-primary').disabled = true;
-
-                try {
-                    purposes = await selectPurposesWithAI(inputs);
-                } catch (error) {
-                    console.error('生成エラー:', error);
-                    purposes = selectPurposesWithKeywords(inputs);
-                }
-            } else {
-                // 詳細モード
-                const detailedInputs = getDetailedInputs();
-
-                if (detailedInputs.length === 0) {
-                    alert('事業内容を入力してください（少なくとも1つの項目を入力）');
-                    return;
-                }
-
-                document.getElementById('loading').classList.add('show');
-                document.getElementById('results').classList.remove('show');
-                document.querySelector('.btn-primary').disabled = true;
-
-                try {
-                    purposes = await selectPurposesWithAIDetailed(detailedInputs);
-                } catch (error) {
-                    console.error('生成エラー:', error);
-                    const combined = detailedInputs.map(i => `${i.who} ${i.what} ${i.how}`);
-                    purposes = selectPurposesWithKeywords(combined);
-                }
-            }
-
-            displayResults(purposes);
-            document.getElementById('loading').classList.remove('show');
-            document.querySelector('.btn-primary').disabled = false;
         }
 
         function displayResults(purposes) {
