@@ -789,64 +789,66 @@
                 padding: 12px;
             }
 
-            /* 目的アイテム - 2段レイアウト */
+            /* 目的アイテム - コンパクトレイアウト */
             .purpose-item {
-                padding: 16px;
+                padding: 14px;
                 gap: 0;
                 flex-wrap: wrap;
-                align-items: stretch;
+                align-items: flex-start;
             }
 
             .drag-icon {
                 display: none;
             }
 
-            /* 上段：番号 + テキスト */
-            .purpose-num {
-                width: 32px;
-                height: 32px;
-                font-size: 13px;
+            /* 順序を変更：番号を最初に */
+            .move-buttons {
+                order: 3;
+                display: flex;
+                flex-direction: row;
+                gap: 6px;
                 flex-shrink: 0;
-                margin-right: 12px;
-                margin-bottom: 12px;
+            }
+
+            .purpose-num {
+                order: 1;
+                width: 28px;
+                height: 28px;
+                font-size: 12px;
+                flex-shrink: 0;
+                margin-right: 10px;
             }
 
             .purpose-text {
+                order: 2;
                 flex: 1;
                 font-size: 14px;
                 padding: 0;
-                min-width: calc(100% - 44px);
-                margin-bottom: 12px;
+                min-width: calc(100% - 40px);
+                margin-bottom: 10px;
                 background: transparent;
-                line-height: 1.6;
-            }
-
-            /* 下段：移動ボタン + アクションボタン */
-            .move-buttons {
-                display: flex;
-                flex-direction: row;
-                gap: 8px;
-                flex-shrink: 0;
-            }
-
-            .btn-move {
-                width: 36px;
-                height: 32px;
-                font-size: 11px;
-                border-radius: 6px;
+                line-height: 1.5;
             }
 
             .purpose-actions {
+                order: 4;
                 flex-shrink: 0;
-                gap: 8px;
+                gap: 6px;
                 margin-left: auto;
             }
 
+            .btn-move {
+                width: 32px;
+                height: 28px;
+                font-size: 10px;
+                border-radius: 5px;
+            }
+
             .btn-icon {
-                width: 36px;
-                height: 32px;
-                font-size: 15px;
-                border-radius: 6px;
+                width: 32px;
+                height: 28px;
+                font-size: 14px;
+                border-radius: 5px;
             }
 
             .btn-add-purpose {
