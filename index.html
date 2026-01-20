@@ -1540,31 +1540,51 @@ JSON形式のみ。説明不要。
         }
 
         function selectOption(btn, bizIndex, qIndex, value) {
-            // 同じ質問の他の選択肢の選択を解除
-            const questionItem = btn.closest('.question-item');
-            questionItem.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+            // 複数選択可能：トグル式
+            const question = currentQuestions.businesses[bizIndex].questions[qIndex];
 
-            // この選択肢を選択
-            btn.classList.add('selected');
-
-            // 値を保存
-            if (!currentQuestions.businesses[bizIndex].questions[qIndex].answer) {
-                currentQuestions.businesses[bizIndex].questions[qIndex].answer = '';
+            // 回答を配列で管理
+            if (!question.answers) {
+                question.answers = [];
             }
 
             if (btn.dataset.isOther) {
-                // その他の場合は入力値を使用
-                const input = btn.nextElementSibling;
-                currentQuestions.businesses[bizIndex].questions[qIndex].answer = input.value || 'その他';
+                // その他の場合：他の「その他」をクリア
+                const wasSelected = btn.classList.contains('selected');
+                if (wasSelected) {
+                    btn.classList.remove('selected');
+                    question.answers = question.answers.filter(a => !a.startsWith('その他'));
+                } else {
+                    btn.classList.add('selected');
+                    const input = btn.nextElementSibling;
+                    const otherValue = input.value || 'その他';
+                    question.answers = question.answers.filter(a => !a.startsWith('その他'));
+                    question.answers.push(otherValue);
+                }
             } else {
-                currentQuestions.businesses[bizIndex].questions[qIndex].answer = value;
+                // 通常の選択肢：トグル
+                if (btn.classList.contains('selected')) {
+                    btn.classList.remove('selected');
+                    question.answers = question.answers.filter(a => a !== value);
+                } else {
+                    btn.classList.add('selected');
+                    question.answers.push(value);
+                }
             }
+
+            // 後方互換性のためanswerも更新
+            question.answer = question.answers.join('、');
         }
 
         function updateOtherValue(input, bizIndex, qIndex) {
             const btn = input.previousElementSibling;
             if (btn.classList.contains('selected')) {
-                currentQuestions.businesses[bizIndex].questions[qIndex].answer = input.value || 'その他';
+                const question = currentQuestions.businesses[bizIndex].questions[qIndex];
+                const otherValue = input.value || 'その他';
+                // その他の値を更新
+                question.answers = question.answers.filter(a => !a.startsWith('その他'));
+                question.answers.push(otherValue);
+                question.answer = question.answers.join('、');
             }
         }
 
