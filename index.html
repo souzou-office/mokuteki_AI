@@ -416,9 +416,10 @@
             transition: background 0.2s;
             font-family: inherit;
             resize: none;
-            overflow: hidden;
+            overflow-y: auto;
             line-height: 1.5;
-            min-height: 36px;
+            min-height: 40px;
+            max-height: 200px;
         }
 
         .purpose-text:focus {
@@ -1607,8 +1608,12 @@ ${databaseText}
 2. そのビジネスに適した事業目的を生成する
    - 上記サンプルは文体・形式の参考として使う
    - ユーザーのビジネス内容を正確に表現した目的を生成する
-   - 入力1つにつき1〜3個程度が目安（関連性が高いもののみ）
-   - 「あったら便利かも」程度のものは含めない
+   - 入力された事業の数に応じて生成数を調整：
+     * 1事業の場合：3〜4個
+     * 2事業の場合：5〜6個
+     * 3事業以上の場合：6〜8個
+   - 最後に「前各号に附帯関連する一切の事業」を必ず含める
+   - 無理に数を増やすために関連性の薄いものを含めない
 
 【公用文の書き方ルール】
 - 「及び」「並びに」の使い分け：
@@ -1768,15 +1773,17 @@ JSON形式のみ。説明不要。
             `;
             container.appendChild(item);
             setupDrag(item);
-            // 自動リサイズ
+            // 自動リサイズ（DOM反映後に実行）
             const textarea = item.querySelector('.purpose-text');
-            autoResize(textarea);
+            requestAnimationFrame(() => {
+                autoResize(textarea);
+            });
             textarea.addEventListener('input', function() { autoResize(this); });
         }
 
         function autoResize(textarea) {
             textarea.style.height = 'auto';
-            textarea.style.height = textarea.scrollHeight + 'px';
+            textarea.style.height = Math.max(textarea.scrollHeight, 40) + 'px';
         }
 
         function setupDrag(item) {
