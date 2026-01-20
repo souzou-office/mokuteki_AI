@@ -415,6 +415,10 @@
             border-radius: 8px;
             transition: background 0.2s;
             font-family: inherit;
+            resize: none;
+            overflow: hidden;
+            line-height: 1.5;
+            min-height: 36px;
         }
 
         .purpose-text:focus {
@@ -450,6 +454,39 @@
             background: #fff5f5;
             border-color: #fc8181;
             color: #e53e3e;
+        }
+
+        /* 上下移動ボタン（スマホ用） */
+        .move-buttons {
+            display: none;
+            flex-direction: column;
+            gap: 2px;
+            margin-right: 8px;
+        }
+
+        .btn-move {
+            width: 28px;
+            height: 22px;
+            border: 1px solid #e2e8f0;
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            color: #718096;
+            font-size: 10px;
+            transition: all 0.2s;
+            padding: 0;
+            line-height: 1;
+        }
+
+        .btn-move:hover {
+            background: #f7fafc;
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+        .btn-move:active {
+            background: #667eea;
+            color: white;
         }
 
         .btn-add-purpose {
@@ -638,82 +675,172 @@
             }
 
             .main {
-                margin: 32px auto;
-                padding: 0 16px;
+                margin: 24px auto;
+                padding: 0 12px;
             }
 
             .card {
-                padding: 32px 24px;
+                padding: 24px 16px;
             }
 
             .card-title {
-                font-size: 20px;
+                font-size: 18px;
             }
 
             .card-subtitle {
-                font-size: 14px;
-                margin-bottom: 24px;
+                font-size: 13px;
+                margin-bottom: 16px;
             }
 
+            /* 入力欄をコンパクトに */
             .input-field {
-                padding: 14px 16px;
-                font-size: 15px;
+                padding: 12px 14px;
+                font-size: 14px;
+            }
+
+            .input-row {
+                gap: 8px;
+                margin-bottom: 8px;
             }
 
             .btn-remove {
-                width: 48px;
-                height: 48px;
+                width: 44px;
+                height: 44px;
+                font-size: 20px;
+            }
+
+            .btn-add {
+                padding: 12px;
+                font-size: 14px;
             }
 
             .btn-primary {
-                padding: 18px;
-                font-size: 16px;
+                padding: 16px;
+                font-size: 15px;
+                margin-top: 20px;
             }
 
+            /* 質問セクション */
+            .question-group {
+                padding: 16px;
+                margin-bottom: 12px;
+            }
+
+            .question-group-title {
+                font-size: 14px;
+                margin-bottom: 12px;
+                padding-bottom: 10px;
+            }
+
+            .question-item {
+                margin-bottom: 14px;
+            }
+
+            .question-label {
+                font-size: 13px;
+                margin-bottom: 8px;
+            }
+
+            .question-options {
+                gap: 6px;
+            }
+
+            .option-btn {
+                padding: 8px 12px;
+                font-size: 13px;
+            }
+
+            .option-other input {
+                padding: 8px 10px;
+                font-size: 13px;
+                width: 120px;
+            }
+
+            .questions-actions {
+                margin-top: 16px;
+                gap: 8px;
+            }
+
+            .btn-secondary {
+                padding: 14px;
+                font-size: 14px;
+            }
+
+            .questions-actions .btn-primary {
+                padding: 14px;
+                font-size: 14px;
+            }
+
+            /* 結果セクション */
             .results-header {
                 flex-direction: column;
-                gap: 16px;
+                gap: 12px;
                 align-items: stretch;
             }
 
             .results-title {
-                font-size: 22px;
+                font-size: 18px;
             }
 
             .btn-copy {
                 width: 100%;
                 text-align: center;
+                padding: 12px;
             }
 
+            /* 目的アイテムをコンパクトに */
             .purpose-item {
-                padding: 16px;
-                gap: 12px;
-                flex-wrap: wrap;
+                padding: 12px;
+                gap: 8px;
+                flex-wrap: nowrap;
+                align-items: flex-start;
             }
 
             .drag-icon {
                 display: none;
             }
 
-            .purpose-text {
-                flex: 1 1 100%;
-                order: 3;
-                font-size: 15px;
+            .move-buttons {
+                display: flex;
+                flex-shrink: 0;
+            }
+
+            .btn-move {
+                width: 24px;
+                height: 20px;
+                font-size: 9px;
             }
 
             .purpose-num {
+                width: 28px;
+                height: 28px;
+                font-size: 12px;
+                flex-shrink: 0;
+            }
+
+            /* テキストが全部見えるように */
+            .purpose-text {
+                flex: 1;
+                font-size: 13px;
+                padding: 8px 10px;
+                min-width: 0;
+            }
+
+            .purpose-actions {
+                flex-shrink: 0;
+                gap: 4px;
+            }
+
+            .btn-icon {
                 width: 32px;
                 height: 32px;
                 font-size: 14px;
             }
 
-            .purpose-actions {
-                margin-left: auto;
-            }
-
-            .btn-icon {
-                width: 36px;
-                height: 36px;
+            .btn-add-purpose {
+                padding: 12px;
+                font-size: 14px;
+                margin-top: 12px;
             }
 
             .modal-overlay.show {
@@ -750,7 +877,7 @@
 
             <div class="input-group" id="inputList">
                 <div class="input-row">
-                    <textarea class="input-field business-input" placeholder="例：リフォーム、飲食店、不動産仲介" rows="2"></textarea>
+                    <textarea class="input-field business-input" placeholder="例：リフォーム、飲食店、不動産仲介" rows="1"></textarea>
                     <button class="btn-remove" onclick="removeInput(this)" style="visibility: hidden;">×</button>
                 </div>
             </div>
@@ -1587,7 +1714,7 @@ JSON形式のみ。説明不要。
             const row = document.createElement('div');
             row.className = 'input-row';
             row.innerHTML = `
-                <textarea class="input-field business-input" placeholder="例：コンサルティング業" rows="2"></textarea>
+                <textarea class="input-field business-input" placeholder="例：コンサルティング業" rows="1"></textarea>
                 <button class="btn-remove" onclick="removeInput(this)">×</button>
             `;
             list.appendChild(row);
@@ -1628,8 +1755,12 @@ JSON形式のみ。説明不要。
             item.draggable = false;
             item.innerHTML = `
                 <span class="drag-icon">☰</span>
+                <div class="move-buttons">
+                    <button class="btn-move" onclick="moveUp(this)" title="上に移動">▲</button>
+                    <button class="btn-move" onclick="moveDown(this)" title="下に移動">▼</button>
+                </div>
                 <div class="purpose-num">${num}</div>
-                <input type="text" class="purpose-text" value="${escapeHtml(text)}" placeholder="目的を入力" draggable="false">
+                <textarea class="purpose-text" placeholder="目的を入力" draggable="false" rows="1">${escapeHtml(text)}</textarea>
                 <div class="purpose-actions">
                     <button class="btn-icon" onclick="openModal(this)" title="一覧から選択">📋</button>
                     <button class="btn-icon delete" onclick="removeItem(this)" title="削除">×</button>
@@ -1637,6 +1768,15 @@ JSON形式のみ。説明不要。
             `;
             container.appendChild(item);
             setupDrag(item);
+            // 自動リサイズ
+            const textarea = item.querySelector('.purpose-text');
+            autoResize(textarea);
+            textarea.addEventListener('input', function() { autoResize(this); });
+        }
+
+        function autoResize(textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = textarea.scrollHeight + 'px';
         }
 
         function setupDrag(item) {
@@ -1708,6 +1848,24 @@ JSON形式のみ。説明不要。
             document.getElementById('count').textContent = `${items.length}個の目的`;
         }
 
+        function moveUp(btn) {
+            const item = btn.closest('.purpose-item');
+            const prev = item.previousElementSibling;
+            if (prev) {
+                item.parentElement.insertBefore(item, prev);
+                renumber();
+            }
+        }
+
+        function moveDown(btn) {
+            const item = btn.closest('.purpose-item');
+            const next = item.nextElementSibling;
+            if (next) {
+                item.parentElement.insertBefore(next, item);
+                renumber();
+            }
+        }
+
         function openModal(btn) {
             editingItem = btn.closest('.purpose-item');
             const body = document.getElementById('modalBody');
@@ -1737,7 +1895,9 @@ JSON形式のみ。説明不要。
 
         function selectItem(text) {
             if (editingItem) {
-                editingItem.querySelector('.purpose-text').value = text;
+                const textarea = editingItem.querySelector('.purpose-text');
+                textarea.value = text;
+                autoResize(textarea);
             }
             closeModal();
         }
