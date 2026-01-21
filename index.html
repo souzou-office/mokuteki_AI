@@ -1484,7 +1484,7 @@ JSON形式のみ。説明不要。
       "name": "関連事業の提案",
       "questions": [
         {
-          "question": "〇〇をされるなら、△△も事業目的に入れておくと良いかもしれません。追加しますか？",
+          "question": "上記を踏まえて、他に追加しておいた方が良さそうな事業はありますか？",
           "options": ["特になし", "提案1", "提案2", "その他"]
         }
       ]
@@ -1559,51 +1559,27 @@ JSON形式のみ。説明不要。
         }
 
         function selectOption(btn, bizIndex, qIndex, value) {
-            // 複数選択可能：トグル式
+            // 単一選択：他の選択肢を解除
+            const questionItem = btn.closest('.question-item');
+            questionItem.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+
+            // この選択肢を選択
+            btn.classList.add('selected');
+
+            // 値を保存
             const question = currentQuestions.businesses[bizIndex].questions[qIndex];
-
-            // 回答を配列で管理
-            if (!question.answers) {
-                question.answers = [];
-            }
-
             if (btn.dataset.isOther) {
-                // その他の場合：他の「その他」をクリア
-                const wasSelected = btn.classList.contains('selected');
-                if (wasSelected) {
-                    btn.classList.remove('selected');
-                    question.answers = question.answers.filter(a => !a.startsWith('その他'));
-                } else {
-                    btn.classList.add('selected');
-                    const input = btn.nextElementSibling;
-                    const otherValue = input.value || 'その他';
-                    question.answers = question.answers.filter(a => !a.startsWith('その他'));
-                    question.answers.push(otherValue);
-                }
+                const input = btn.nextElementSibling;
+                question.answer = input.value || 'その他';
             } else {
-                // 通常の選択肢：トグル
-                if (btn.classList.contains('selected')) {
-                    btn.classList.remove('selected');
-                    question.answers = question.answers.filter(a => a !== value);
-                } else {
-                    btn.classList.add('selected');
-                    question.answers.push(value);
-                }
+                question.answer = value;
             }
-
-            // 後方互換性のためanswerも更新
-            question.answer = question.answers.join('、');
         }
 
         function updateOtherValue(input, bizIndex, qIndex) {
             const btn = input.previousElementSibling;
             if (btn.classList.contains('selected')) {
-                const question = currentQuestions.businesses[bizIndex].questions[qIndex];
-                const otherValue = input.value || 'その他';
-                // その他の値を更新
-                question.answers = question.answers.filter(a => !a.startsWith('その他'));
-                question.answers.push(otherValue);
-                question.answer = question.answers.join('、');
+                currentQuestions.businesses[bizIndex].questions[qIndex].answer = input.value || 'その他';
             }
         }
 
@@ -1613,12 +1589,26 @@ JSON形式のみ。説明不要。
         }
 
         async function generateFromQuestions() {
+            // 未回答チェック
+            let unanswered = [];
+            currentQuestions.businesses.forEach(biz => {
+                biz.questions.forEach(q => {
+                    if (!q.answer) {
+                        unanswered.push(`「${biz.name}」の「${q.question}」`);
+                    }
+                });
+            });
+
+            if (unanswered.length > 0) {
+                alert('以下の質問に回答してください：\n\n' + unanswered.join('\n'));
+                return;
+            }
+
             // 回答を収集
             const answersText = currentQuestions.businesses.map(biz => {
                 let text = `【${biz.name}】\n`;
                 biz.questions.forEach(q => {
-                    const answer = q.answer || '（未回答）';
-                    text += `- ${q.question} → ${answer}\n`;
+                    text += `- ${q.question} → ${q.answer}\n`;
                 });
                 return text;
             }).join('\n');
