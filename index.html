@@ -1559,27 +1559,71 @@ JSON形式のみ。説明不要。
         }
 
         function selectOption(btn, bizIndex, qIndex, value) {
-            // 単一選択：他の選択肢を解除
-            const questionItem = btn.closest('.question-item');
-            questionItem.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+            const business = currentQuestions.businesses[bizIndex];
+            const question = business.questions[qIndex];
+            const isRelatedBusiness = business.name === '関連事業の提案';
 
-            // この選択肢を選択
-            btn.classList.add('selected');
+            if (isRelatedBusiness) {
+                // 関連事業は複数選択可能（トグル式）
+                if (!question.answers) {
+                    question.answers = [];
+                }
 
-            // 値を保存
-            const question = currentQuestions.businesses[bizIndex].questions[qIndex];
-            if (btn.dataset.isOther) {
-                const input = btn.nextElementSibling;
-                question.answer = input.value || 'その他';
+                if (btn.classList.contains('selected')) {
+                    btn.classList.remove('selected');
+                    if (btn.dataset.isOther) {
+                        question.answers = question.answers.filter(a => !a.startsWith('その他'));
+                    } else {
+                        question.answers = question.answers.filter(a => a !== value);
+                    }
+                } else {
+                    btn.classList.add('selected');
+                    if (btn.dataset.isOther) {
+                        const input = btn.nextElementSibling;
+                        question.answers.push(input.value || 'その他');
+                    } else {
+                        // 「特になし」を選んだら他を解除、他を選んだら「特になし」を解除
+                        if (value === '特になし') {
+                            btn.closest('.question-item').querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+                            btn.classList.add('selected');
+                            question.answers = ['特になし'];
+                        } else {
+                            question.answers = question.answers.filter(a => a !== '特になし');
+                            btn.closest('.question-item').querySelector('.option-btn')?.classList.remove('selected');
+                            question.answers.push(value);
+                        }
+                    }
+                }
+                question.answer = question.answers.join('、');
             } else {
-                question.answer = value;
+                // 通常の質問は単一選択
+                const questionItem = btn.closest('.question-item');
+                questionItem.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+
+                if (btn.dataset.isOther) {
+                    const input = btn.nextElementSibling;
+                    question.answer = input.value || 'その他';
+                } else {
+                    question.answer = value;
+                }
             }
         }
 
         function updateOtherValue(input, bizIndex, qIndex) {
             const btn = input.previousElementSibling;
             if (btn.classList.contains('selected')) {
-                currentQuestions.businesses[bizIndex].questions[qIndex].answer = input.value || 'その他';
+                const business = currentQuestions.businesses[bizIndex];
+                const question = business.questions[qIndex];
+                const otherValue = input.value || 'その他';
+
+                if (business.name === '関連事業の提案' && question.answers) {
+                    question.answers = question.answers.filter(a => !a.startsWith('その他'));
+                    question.answers.push(otherValue);
+                    question.answer = question.answers.join('、');
+                } else {
+                    question.answer = otherValue;
+                }
             }
         }
 
