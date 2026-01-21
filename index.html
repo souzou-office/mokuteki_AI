@@ -1397,7 +1397,18 @@
         // ============================================
         // Cloudflare Worker API エンドポイント設定
         // ============================================
-        const API_ENDPOINT = "https://mokuteki-ai.ikeda-250.workers.dev?admin_key=mktk_admin_2024xKp9Qz";
+        const API_BASE = "https://mokuteki-ai.ikeda-250.workers.dev";
+
+        // URLパラメータからadmin_keyを取得（あれば付加）
+        function getApiEndpoint() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const adminKey = urlParams.get('admin_key');
+            if (adminKey) {
+                return `${API_BASE}?admin_key=${adminKey}`;
+            }
+            return API_BASE;
+        }
+        const API_ENDPOINT = getApiEndpoint();
 
         let dragItem = null;
         let editingItem = null;
