@@ -1510,8 +1510,9 @@ JSON形式のみ。説明不要。
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    model: "claude-sonnet-4-20250514",
+                    model: "claude-sonnet-5",
                     max_tokens: 2000,
+                    thinking: { type: "disabled" },
                     messages: [
                         { role: "user", content: prompt }
                     ]
@@ -1523,7 +1524,11 @@ JSON形式のみ。説明不要。
             }
 
             const data = await response.json();
-            let responseText = data.content[0].text;
+            const textBlock = (data.content || []).find(b => b.type === "text");
+            if (!textBlock) {
+                throw new Error("API応答にテキストが含まれていません");
+            }
+            let responseText = textBlock.text;
 
             // JSONパース
             responseText = responseText.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
@@ -1735,8 +1740,9 @@ JSON形式のみ。説明不要。
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    model: "claude-sonnet-4-20250514",
+                    model: "claude-sonnet-5",
                     max_tokens: 4000,
+                    thinking: { type: "disabled" },
                     messages: [
                         { role: "user", content: prompt }
                     ]
@@ -1748,7 +1754,11 @@ JSON形式のみ。説明不要。
             }
 
             const data = await response.json();
-            let responseText = data.content[0].text;
+            const textBlock = (data.content || []).find(b => b.type === "text");
+            if (!textBlock) {
+                throw new Error("API応答にテキストが含まれていません");
+            }
+            let responseText = textBlock.text;
 
             responseText = responseText.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
             const result = JSON.parse(responseText);
